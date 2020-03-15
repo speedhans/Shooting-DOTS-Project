@@ -1,0 +1,175 @@
+﻿using System.Collections.Generic;
+using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
+using Unity.Entities;
+using Unity.Mathematics;
+using UnityEngine;
+using Unity.Transforms;
+using Random = Unity.Mathematics.Random;
+
+public static class TrailMeshGenerator
+{
+    static Vector3 CalcPosition(int i, int j) => new Vector3(i, Mathf.Sin(j * Mathf.PI * 2 / 8.0f), Mathf.Cos(j * Mathf.PI * 2 / 8.0f));
+
+    public static Mesh CreateMesh()
+    {
+        var vertices = new List<Vector3>();
+        var triangles = new List<int>();
+
+        for (var i = 0; i < 20 - 1; ++i)
+        {
+            for (var j = 0; j < 8; ++j)
+            {
+                triangles.AddRange(new[] {
+                    vertices.Count + 0, vertices.Count + 1, vertices.Count + 2,vertices.Count + 2, vertices.Count + 1, vertices.Count + 3,
+                });
+                vertices.AddRange(
+                    new[]  {
+                        CalcPosition(i, j),  CalcPosition(i+1, j),CalcPosition(i, j+1), CalcPosition(i+1, j+1),
+                    }
+                );
+            }
+        }
+
+        var mesh = new Mesh();
+        mesh.SetVertices(vertices);
+        mesh.SetTriangles(triangles, 0);
+        mesh.RecalculateNormals();
+        mesh.RecalculateTangents();
+        mesh.RecalculateBounds();
+        return mesh;
+    }
+}
+
+//[UpdateAfter(typeof(TrailCalculateSystem))]
+public class TrailRendererSystem : ComponentSystem
+{
+    public static Material m_Material;
+
+    MeshInstancedArgs m_MeshInstancedArgs;
+    Mesh m_TrailMesh;
+    MaterialPropertyBlock m_MaterialPropertyBlock;
+
+    ComputeBuffer m_TrailElementBufferInShader;
+    ComputeBuffer m_SegmentBufferInShader;
+
+    NativeArray<float3> m_TrailElements;
+    NativeArray<int3> m_Segments;
+
+    EntityQuery m_TrailBuffer;
+
+    EntityManager m_EntityManager;
+    protected override void OnCreate()
+    {
+        m_EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+
+        //Random random = new Random(99);
+        //EntityArchetype arch = m_EntityManager.CreateArchetype(typeof(LifeTimerComponent));
+        //for (int i = 0; i < 10; ++i)
+        //{
+        //    Entity e = m_EntityManager.CreateEntity(arch);
+        //    m_EntityManager.SetComponentData(e, new LifeTimerComponent(random.NextFloat(3.0f, 10.0f)));
+        //    m_EntityManager.SetName(e, "timer" + i.ToString());
+        //}
+
+
+        //EntityArchetype type = m_EntityManager.CreateArchetype(typeof(TrailBufferElement));
+        //Entity entity = m_EntityManager.CreateEntity(typeof(TrailBufferElement));
+        //DynamicBuffer<TrailBufferElement> buffer = m_EntityManager.GetBuffer<TrailBufferElement>(entity);
+        //buffer.Add(new TrailBufferElement(new float3(0,0,0)));
+        //Debug.Log(buffer.Length);
+        //DynamicBuffer<float3> v = buffer.Reinterpret<float3>();
+        //for (int i = 0; i < v.Length; ++i)
+        //{
+        //    v[i] = new float3(1,1,1);
+        //}
+        //Debug.Log(buffer.Length);
+        m_MeshInstancedArgs = new MeshInstancedArgs();
+        m_TrailMesh = TrailMeshGenerator.CreateMesh();
+        m_MaterialPropertyBlock = new MaterialPropertyBlock();
+    }
+
+    protected override void OnDestroy()
+    {
+        m_MeshInstancedArgs.Dispose();
+        if (m_TrailElementBufferInShader != null)
+            m_TrailElementBufferInShader.Dispose();
+        if (m_SegmentBufferInShader != null)
+            m_SegmentBufferInShader.Dispose();
+
+        if (m_TrailElements.IsCreated) m_TrailElements.Dispose();
+        if (m_Segments.IsCreated) m_Segments.Dispose();
+    }
+
+    static int CalcWrappingArraySize(int length) =>
+    Mathf.Max(1 << Mathf.CeilToInt(Mathf.Log(length, 2)), 1048);
+
+    protected override unsafe void OnUpdate()
+    {
+        EntityQuery query = GetEntityQuery(ComponentType.ReadWrite<TrailBufferElement>());
+        NativeArray<Entity> entitis = query.ToEntityArray(Allocator.Persistent);
+        int segmentCount = entitis.Length;
+        int trailElementCount = 0;
+        BufferFromEntity<TrailBufferElement> buffers = GetBufferFromEntity<TrailBufferElement>();
+        for (int i = 0; i < entitis.Length; ++i)
+        {
+            trailElementCount += buffers[entitis[i]].Length;
+        }
+
+        if (!m_TrailElements.IsCreated || m_TrailElements.Length < trailElementCount)
+        {
+            if (m_TrailElements.IsCreated) m_TrailElements.Dispose();
+            m_TrailElements = new NativeArray<float3>(CalcWrappingArraySize(trailElementCount), Allocator.Persistent);
+
+            m_TrailElementBufferInShader?.Dispose();
+            m_TrailElementBufferInShader = new ComputeBuffer(m_TrailElements.Length, sizeof(TrailBufferElement));
+        }
+
+        if (!m_Segments.IsCreated || m_Segments.Length < segmentCount)
+        {
+            if (m_Segments.IsCreated) m_Segments.Dispose();
+            m_Segments = new NativeArray<int3>(CalcWrappingArraySize(segmentCount), Allocator.Persistent);
+
+            m_SegmentBufferInShader?.Dispose();
+            m_SegmentBufferInShader = new ComputeBuffer(m_Segments.Length, sizeof(TrailBufferElement));
+        }
+
+        int offset = 0;
+        float3* trailElementsPtr = (float3*)m_TrailElements.GetUnsafePtr();
+        int3* segmentsPtr = (int3*)m_Segments.GetUnsafePtr();
+
+        for (int i = 0; i < segmentCount; ++i)
+        {
+            DynamicBuffer<float3> trailbuffer = buffers[entitis[i]].Reinterpret<float3>();
+            Entity entity = entitis[i];
+
+            int bufferlength = trailbuffer.Length;
+
+            UnsafeUtility.MemCpy(trailElementsPtr, trailbuffer.GetUnsafePtr(), sizeof(float3) * bufferlength);
+            *segmentsPtr = new int3(offset, bufferlength, entity.Index);
+
+            offset += bufferlength;
+
+            segmentsPtr++;
+            trailElementsPtr += bufferlength;
+
+            m_TrailElementBufferInShader.SetData(m_TrailElements);
+            m_SegmentBufferInShader.SetData(m_Segments);
+
+            m_MaterialPropertyBlock.SetBuffer("_Positions", m_TrailElementBufferInShader);
+            m_MaterialPropertyBlock.SetBuffer("_Segments", m_SegmentBufferInShader);
+
+            m_MeshInstancedArgs.SetData(m_TrailMesh, (uint)segmentCount);
+
+            Graphics.DrawMeshInstancedIndirect(
+                m_TrailMesh, 0, m_Material,
+                new Bounds(Vector3.zero, Vector3.one * 1000),
+                m_MeshInstancedArgs.m_Buffer, 0, m_MaterialPropertyBlock
+            );
+
+            Debug.Log("Render detail: " + trailElementCount + "/" + segmentCount + " : " + m_TrailElements.Length + "/" + m_Segments.Length);
+        }
+
+        entitis.Dispose();
+    }
+}
