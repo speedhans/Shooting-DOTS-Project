@@ -89,8 +89,8 @@
             fixed4 frag(v2f i) : SV_Target
             {
                 // alphaが1未満なら非表示にする
-                fixed4 col = i.color;
-                clip(col.a - 0.999);
+                fixed4 col = tex2D(_MainTex, i.uv); //i.color;
+                //clip(col.a - 0.999);
                 
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;

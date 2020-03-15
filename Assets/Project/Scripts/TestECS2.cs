@@ -10,7 +10,8 @@ public class TestECS2 : MonoBehaviour, IConvertGameObjectToEntity
 {
     [SerializeField]
     Material m_TrailMat;
-
+    [SerializeField]
+    int m_ParticleCount;
     public void Convert(Entity _entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         UnityEngine.Debug.Log("GameObjectConversionSystem");
@@ -21,7 +22,7 @@ public class TestECS2 : MonoBehaviour, IConvertGameObjectToEntity
 
         EntityArchetype arch = manager.CreateArchetype(typeof(Translation), typeof(TrailVelocityComponent), typeof(TrailBufferElement));
         Random random = new Random(99);
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < m_ParticleCount; ++i)
         {
             Entity entity = manager.CreateEntity(arch);
             manager.SetName(entity, "Trail_" + i.ToString());

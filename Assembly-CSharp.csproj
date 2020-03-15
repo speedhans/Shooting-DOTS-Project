@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{FA87DC74-9594-61FB-1C01-41D2DC507022}</ProjectGuid>
+    <ProjectGuid>{7DB74112-A7E0-1B4D-9838-DE86B8BAACFD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -64,7 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Project\Scripts\AnimationCallbackEvent.cs" />
-    <Compile Include="Assets\Project\Scripts\CharacterBase.cs" />
+    <Compile Include="Assets\Project\Scripts\ECS\Bullet\BulletSystem.cs" />
     <Compile Include="Assets\Project\Scripts\ECS\LifeTimer\LifeTimerSystem.cs" />
     <Compile Include="Assets\Project\Scripts\ECS\System\MovementSystem.cs" />
     <Compile Include="Assets\Project\Scripts\ECS\System\SpriteAnimationSystem.cs" />
@@ -76,11 +76,15 @@
     <Compile Include="Assets\Project\Scripts\ECS_DrawSprite.cs" />
     <Compile Include="Assets\Project\Scripts\ECS_DrawSpriteJob.cs" />
     <Compile Include="Assets\Project\Scripts\ECS_SpriteRenderer.cs" />
-    <Compile Include="Assets\Project\Scripts\PlayerCharacter.cs" />
+    <Compile Include="Assets\Project\Scripts\Lagacy\CharacterBase.cs" />
+    <Compile Include="Assets\Project\Scripts\Lagacy\InputManager.cs" />
+    <Compile Include="Assets\Project\Scripts\Lagacy\PlayerCharacter.cs" />
     <Compile Include="Assets\Project\Scripts\System\NavMeshController.cs" />
     <Compile Include="Assets\Project\Scripts\TestComponent.cs" />
     <Compile Include="Assets\Project\Scripts\TestECS1.cs" />
     <Compile Include="Assets\Project\Scripts\TestECS2.cs" />
+    <Compile Include="Assets\Project\Scripts\TestScript1.cs" />
+    <Compile Include="Assets\Project\Scripts\sunTTHelper.cs" />
     <Compile Include="Assets\Scripts\SimpleCameraController.cs" />
     <Compile Include="Assets\Store\SD Unity-Chan Haon Custom\Unity-Chan!\Script\RandomWind.cs" />
     <Compile Include="Assets\Store\SD Unity-Chan Haon Custom\Unity-Chan!\Script\SpringBone.cs" />
@@ -92,140 +96,141 @@
     <None Include="Assets\Project\Scripts\Shaders\Includes\CustomLighting.hlsl" />
     <None Include="Assets\Store\SD Unity-Chan Haon Custom\_Readme\Readme SD Unity-Chan Haon Custom Series.txt" />
     <None Include="Assets\Project\Scripts\Shaders\ECS_TrailShader.shader" />
+    <None Include="Assets\Project\Scripts\Shaders\ECS_TrailShaderAddtive.shader" />
     <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline.Editor">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.CacheServer">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/UnityEditor.CacheServer.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/UnityEditor.CacheServer.dll</HintPath>
     </Reference>
     <Reference Include="Unity.ScriptableBuildPipeline.Editor">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Universal.Shaders">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Shaders.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Shaders.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Burst">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Burst.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Burst.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VSCode.Editor">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Entities.Properties">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Entities.Properties.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Entities.Properties.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Jobs">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Jobs.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Jobs.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Jobs.Editor">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Jobs.Editor.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Jobs.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Entities.Editor">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Entities.Editor.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Entities.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Burst.Editor">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Burst.Editor.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Burst.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Editor">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Collections">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Collections.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Collections.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Runtime">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Scenes.Hybrid">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Scenes.Hybrid.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Scenes.Hybrid.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Scenes.Editor">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Scenes.Editor.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Scenes.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mathematics.Extensions">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Mathematics.Extensions.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Mathematics.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Universal.Runtime">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Universal.Editor">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Editor.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Searcher.Editor">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Searcher.Editor.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Searcher.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mathematics.Extensions.Hybrid">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Mathematics.Extensions.Hybrid.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Mathematics.Extensions.Hybrid.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rendering.Hybrid">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Rendering.Hybrid.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Rendering.Hybrid.dll</HintPath>
     </Reference>
     <Reference Include="Unity.CollabProxy.Editor">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Entities.BuildUtils">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Entities.BuildUtils.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Rider.Editor">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Entities.Hybrid.EndToEnd.Tests">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Entities.Hybrid.EndToEnd.Tests.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Entities.Hybrid">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Entities.Hybrid.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Mathematics">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Mathematics.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Properties">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Properties.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Entities">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Entities.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Transforms">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Transforms.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Transforms.Editor">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Transforms.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ScriptableBuildPipeline">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ShaderGraph.Editor">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.ShaderGraph.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Mathematics.Editor">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Mathematics.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.UI">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Transforms.Hybrid">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Transforms.Hybrid.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rendering.Hybrid.Editor">
-      <HintPath>F:/Project/Unity Dots/Library/ScriptAssemblies/Unity.Rendering.Hybrid.Editor.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Rendering.Hybrid.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Entities.BuildUtils">
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Entities.BuildUtils.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Rider.Editor">
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Entities.Hybrid.EndToEnd.Tests">
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Entities.Hybrid.EndToEnd.Tests.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Entities.Hybrid">
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Entities.Hybrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Mathematics">
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Mathematics.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Properties">
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Properties.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Entities">
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Entities.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Transforms">
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Transforms.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Transforms.Editor">
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Transforms.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ScriptableBuildPipeline">
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ShaderGraph.Editor">
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.ShaderGraph.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Mathematics.Editor">
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Mathematics.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.UI">
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Transforms.Hybrid">
+      <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.Transforms.Hybrid.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>F:/Engines/Unity/2019.3.5f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -405,10 +410,10 @@
       <HintPath>F:/Engines/Unity/2019.3.5f1/Editor/Data/Managed/UnityEngine/UnityEngine.XRModule.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Burst.Unsafe">
-      <HintPath>F:/Project/Unity Dots/Library/PackageCache/com.unity.burst@1.2.3/Unity.Burst.Unsafe.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/PackageCache/com.unity.burst@1.2.3/Unity.Burst.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
-      <HintPath>F:/Project/Unity Dots/Library/PackageCache/com.unity.collections@0.6.0-preview.9/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <HintPath>F:/Project/DOTS Shooting Project/Library/PackageCache/com.unity.collections@0.6.0-preview.9/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>F:/Engines/Unity/2019.3.5f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>

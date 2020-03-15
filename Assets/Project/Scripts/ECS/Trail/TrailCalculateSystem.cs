@@ -6,6 +6,7 @@ using UnityEngine;
 using Unity.Transforms;
 using Unity.Burst;
 
+[UpdateAfter(typeof(TrailVelocitySystem))]
 public class TrailCalculateSystem : JobComponentSystem
 {
     [BurstCompile]
