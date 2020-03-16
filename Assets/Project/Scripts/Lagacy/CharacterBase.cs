@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using sunTT;
 
 // Left hand point position.x = -0.045 / rot 0,-90,90
 // Right hand point position.x = -0.045 / rot 0,-90,-90
@@ -23,6 +24,8 @@ public class CharacterBase : MonoBehaviour
     protected Transform m_ChestTarget;
     [SerializeField]
     Vector3 m_ChestOffset;
+
+    protected Gun[] m_Gun = new Gun[2];
 
     protected virtual void Awake()
     {
@@ -48,10 +51,13 @@ public class CharacterBase : MonoBehaviour
 
         GameObject gun = Resources.Load<GameObject>("Weapons/Gun");
         GameObject leftgun = Instantiate(gun, m_LeftHandPoint);
-        GameObject rightgutn = Instantiate(gun, m_RightHandPoint);
+        GameObject rightgun = Instantiate(gun, m_RightHandPoint);
 
         sunTTHelper.SetLocalTransformIdentity(leftgun.transform);
-        sunTTHelper.SetLocalTransformIdentity(rightgutn.transform);
+        sunTTHelper.SetLocalTransformIdentity(rightgun.transform);
+
+        m_Gun[0] = leftgun.GetComponent<Gun>();
+        m_Gun[1] = rightgun.GetComponent<Gun>();
     }
 
     void CreateGun()

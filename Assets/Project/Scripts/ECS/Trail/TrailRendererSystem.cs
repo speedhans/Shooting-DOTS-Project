@@ -10,7 +10,8 @@ using Random = Unity.Mathematics.Random;
 [UpdateAfter(typeof(TrailCalculateSystem))]
 public static class TrailMeshGenerator
 {
-    static Vector3 CalcPosition(int i, int j) => new Vector3(i, Mathf.Sin(j * Mathf.PI * 2 / 8.0f), Mathf.Cos(j * Mathf.PI * 2 / 8.0f));
+    static float MeshHeightScale = 0.5f;
+    static Vector3 CalcPosition(int i, int j) => new Vector3(i, Mathf.Sin(j * Mathf.PI * 2 / 8.0f) * MeshHeightScale, Mathf.Cos(j * Mathf.PI * 2 / 8.0f) * MeshHeightScale);
 
     public static Mesh CreateMesh()
     {
@@ -137,6 +138,14 @@ public class TrailRendererSystem : ComponentSystem
 
             segmentsPtr++;
             trailElementsPtr += bufferlength;
+
+            for (int j = 0; j < trailbuffer.Length; ++j)
+            {
+                if (trailbuffer[j].x == 0.0f && trailbuffer[j].y == 0.0f && trailbuffer[j].z == 0.0f)
+                {
+                    Debug.Log(entity.Index);
+                }
+            }
         }
 
         m_TrailElementBufferInShader.SetData(m_TrailElements);

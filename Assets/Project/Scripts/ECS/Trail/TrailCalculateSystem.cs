@@ -12,12 +12,9 @@ public class TrailCalculateSystem : JobComponentSystem
     [BurstCompile]
     struct TrailJob : IJobForEachWithEntity_EBC<TrailBufferElement, Translation>
     {
-        //public DynamicBuffer<TrailBufferElement> Buffer;
-        //public NativeArray<Translation> Array;
-
         public void Execute(Entity entity, int index, DynamicBuffer<TrailBufferElement> buffer, ref Translation _Translation)
         {
-            if (buffer.Length > 20)
+            if (buffer.Length > 10)
                 buffer.RemoveAt(0);
             DynamicBuffer<float3> rbuffer = buffer.Reinterpret<float3>();
             rbuffer.Add(_Translation.Value);

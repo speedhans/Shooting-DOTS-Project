@@ -77,9 +77,13 @@
     <Compile Include="Assets\Project\Scripts\ECS_DrawSpriteJob.cs" />
     <Compile Include="Assets\Project\Scripts\ECS_SpriteRenderer.cs" />
     <Compile Include="Assets\Project\Scripts\Lagacy\CharacterBase.cs" />
+    <Compile Include="Assets\Project\Scripts\Lagacy\Gun\Gun.cs" />
     <Compile Include="Assets\Project\Scripts\Lagacy\InputManager.cs" />
+    <Compile Include="Assets\Project\Scripts\Lagacy\ObjectPool.cs" />
+    <Compile Include="Assets\Project\Scripts\Lagacy\ObjectSystem\Billboard.cs" />
+    <Compile Include="Assets\Project\Scripts\Lagacy\ObjectSystem\LifeTimerWithObjectPool.cs" />
     <Compile Include="Assets\Project\Scripts\Lagacy\PlayerCharacter.cs" />
-    <Compile Include="Assets\Project\Scripts\System\NavMeshController.cs" />
+    <Compile Include="Assets\Project\Scripts\Lagacy\System\NavMeshController.cs" />
     <Compile Include="Assets\Project\Scripts\TestComponent.cs" />
     <Compile Include="Assets\Project\Scripts\TestECS1.cs" />
     <Compile Include="Assets\Project\Scripts\TestECS2.cs" />

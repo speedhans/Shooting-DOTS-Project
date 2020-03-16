@@ -27,6 +27,10 @@ public class PlayerCharacter : CharacterBase
     float m_JumpTriggerTimer = 0.1f;
     float m_AnimationImmediatelyAfterTheJumpTimer;
 
+    [SerializeField]
+    LayerMask m_TargetLayerMask;
+    float m_GunShotDelay = 0.1f;
+
     protected override void Awake()
     {
         base.Awake();
@@ -46,7 +50,11 @@ public class PlayerCharacter : CharacterBase
 
         TimeValueProgress(deltatime);
         SetMovementAnim(InputManager.Instance.GetArrowVector());
-
+        if (m_UpperAnimState == E_UpperBodyAnimState.ATTACK)
+        {
+            m_GunShotDelay -= deltatime;
+            GunAttackBulletShot();
+        }
         if (m_UnderAnimState == E_UnderBodyAnimState.JUMP)
         {
             m_JumpTriggerTimer -= deltatime;
@@ -101,18 +109,34 @@ public class PlayerCharacter : CharacterBase
     void GunAttack()
     {
         if (m_UpperAnimState != E_UpperBodyAnimState.ATTACK)
+        {
             m_Animator.CrossFade("GunAttackStart", 0.0f);
+            m_Animator.Update(Time.deltaTime);
+        }
         m_UpperAnimState = E_UpperBodyAnimState.ATTACK;
         // attack
 
-        Debug.DrawLine(m_LeftHandPoint.position, m_LeftHandPoint.position + (m_LeftHandPoint.forward * 100.0f), Color.red);
-        Debug.DrawLine(m_RightHandPoint.position, m_RightHandPoint.position + (m_RightHandPoint.forward * 100.0f), Color.blue);
+        foreach(Gun g in m_Gun)
+            g.GunShotActivate();
     }
 
     void GunAttackStop()
     {
         m_UpperAnimState = E_UpperBodyAnimState.IDLE;
         m_Animator.CrossFade("Idle", 0.1f);
+
+        foreach (Gun g in m_Gun)
+            g.GunShotDisable();
+    }
+
+    void GunAttackBulletShot()
+    {
+        if (m_GunShotDelay <= 0.0f)
+        {
+            m_GunShotDelay = 0.15f;
+            BulletSystem.CreateBullet(transform.position + (transform.rotation * new Vector3(0.2f, 0.55f, 0.3f)), 1.0f, 1.0f, transform.forward, 30.0f, m_TargetLayerMask);
+            BulletSystem.CreateBullet(transform.position + (transform.rotation * new Vector3(-0.2f, 0.55f, 0.3f)), 1.0f, 1.0f, transform.forward, 30.0f, m_TargetLayerMask);
+        }
     }
 
     void TimeValueProgress(float _DeltaTime)

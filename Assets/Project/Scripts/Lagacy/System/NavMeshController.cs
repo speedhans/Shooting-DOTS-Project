@@ -13,7 +13,7 @@ public class NavMeshController
     [System.Serializable]
     public struct S_DynamicObjectAvoidedData
     {
-        [Header("[The number of sensors must be odd]")]
+        [Header("[The number of sensors must be odd]")] // 홀수만 가능
         public int m_SencorCount;
         public float m_SencorLength;
         public float m_SencorAngle;

@@ -47,6 +47,7 @@
                     float2 uv : TEXCOORD0;
                     #ifdef SOFTPARTICLES_ON
                     float4 projPos : TEXCOORD1;
+                    float alphaclip : 
                     #endif
                 };
 
@@ -65,7 +66,7 @@
 
 
                 // 頂点を加工し、Trailの位置に移動させる
-                void TransformVertex(inout float3 _vertex, uint _instanceID)
+                void TransformVertex(inout float3 _vertex, uint _instanceID, inout float4 _color : COLOR0)
                 {//, inout float4 _color : COLOR0) {
                     // Segment情報を取得
                     int index = _vertex.x;
@@ -86,14 +87,14 @@
 
                     // 色を適当に計算する
                     //_color.rgb = hsv2rgb(float3(frac(segment.z * 0.1), 1, 1));
-                    //_color.a = index < segment.y ? 1 : 0; // segmentのサイズ以上の頂点を描画中なら、alphaを0（非表示）にする
+                    _color.a = index < segment.y ? 1 : 0; // segmentのサイズ以上の頂点を描画中なら、alphaを0（非表示）にする
                 }
 
                 v2f vert(appdata v, uint instanceID : SV_InstanceID)
                 {
                     v2f o;
                     //UNITY_SETUP_INSTANCE_ID(v);
-                    TransformVertex(v.vertex.xyz, instanceID);// , o.color); // 頂点を加工する
+                    TransformVertex(v.vertex.xyz, instanceID, v.color);// , o.color); // 頂点を加工する
 
                     o.vertex = UnityObjectToClipPos(v.vertex);
                     #ifdef SOFTPARTICLES_ON
@@ -110,7 +111,8 @@
                 float _InvFade;
 
                 fixed4 frag(v2f i) : COLOR
-                {
+                { 
+                    clip(i.color.a - 0.999);
                     #ifdef SOFTPARTICLES_ON
                     float sceneZ = LinearEyeDepth(UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.projPos))));
                     float partZ = i.projPos.z;
