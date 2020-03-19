@@ -5,11 +5,6 @@ using UnityEngine;
 [System.Serializable]
 public class NavMeshController
 {
-    static Vector3 fwdRight = new Vector3(0.7f, 0.0f, 0.7f);
-    static Vector3 fwdLeft = new Vector3(-0.7f, 0.0f, 0.7f);
-    static Vector3 backRight = new Vector3(0.7f, 0.0f, -0.7f);
-    static Vector3 backLeft = new Vector3(-0.7f, 0.0f, -0.7f);
-
     [System.Serializable]
     public struct S_DynamicObjectAvoidedData
     {

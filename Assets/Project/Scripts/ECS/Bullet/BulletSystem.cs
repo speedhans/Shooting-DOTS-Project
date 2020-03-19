@@ -6,14 +6,24 @@ using UnityEngine;
 using Unity.Transforms;
 using Unity.Burst;
 
+public enum E_BulletType
+{
+    ORANGE = 0,
+    RED,
+    GREEN,
+    MAX
+}
+
 public struct BulletComponent : IComponentData
 {
+    public E_BulletType BulletType;
     public float Damage;
     public float3 Direction;
     public float Speed;
     public LayerMask TargetLayerMask;
-    public BulletComponent(float _Damage, float3 _Direction, float _Speed, LayerMask _TargetLayerMask)
+    public BulletComponent(E_BulletType _Type, float _Damage, float3 _Direction, float _Speed, LayerMask _TargetLayerMask)
     {
+        BulletType = _Type;
         Damage = _Damage;
         Direction = _Direction;
         Speed = _Speed;
@@ -23,19 +33,23 @@ public struct BulletComponent : IComponentData
 
 public class BulletSystem : ComponentSystem
 {
-    static EntityManager m_EntityManger;
+    static public GameObject[] BulletHitPrefabs;
 
+    static EntityManager m_EntityManger;
     static EntityArchetype m_BulletArchetype;
 
-    static public void CreateBullet(float3 _StartPosition, float _LifeTime, float _Damage, float3 _Direction, float _Speed, LayerMask _TargetLayerMask)
+    static public void CreateBullet(float3 _StartPosition, float _LifeTime, E_BulletType _Type, float _Damage, float3 _Direction, float _Speed, LayerMask _TargetLayerMask, int _TrailMeshCount = 10)
     {
+        int meshcount = _TrailMeshCount;
+
         Entity entity = m_EntityManger.CreateEntity(m_BulletArchetype);
         m_EntityManger.SetComponentData(entity, new Translation() { Value = _StartPosition });
-        m_EntityManger.SetComponentData(entity, new BulletComponent(_Damage, _Direction, _Speed, _TargetLayerMask));
+        m_EntityManger.SetComponentData(entity, new BulletComponent(_Type, _Damage, _Direction, _Speed, _TargetLayerMask));
+        m_EntityManger.SetComponentData(entity, new TrailComponent() { MeshCount = meshcount });
         m_EntityManger.SetComponentData(entity, new LifeTimerComponent(_LifeTime));
         DynamicBuffer<TrailBufferElement> buffer = m_EntityManger.GetBuffer<TrailBufferElement>(entity);
         DynamicBuffer<float3> reinb = buffer.Reinterpret<float3>();
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < meshcount; ++i)
         {
             reinb.Add(_StartPosition);
         }
@@ -45,7 +59,7 @@ public class BulletSystem : ComponentSystem
     {
         m_EntityManger = World.DefaultGameObjectInjectionWorld.EntityManager;
 
-        m_BulletArchetype = m_EntityManger.CreateArchetype(typeof(Translation), typeof(BulletComponent), typeof(TrailBufferElement), typeof(LifeTimerComponent));
+        m_BulletArchetype = m_EntityManger.CreateArchetype(typeof(Translation), typeof(BulletComponent), typeof(TrailBufferElement), typeof(TrailComponent), typeof(LifeTimerComponent));
     }
 
     protected override void OnUpdate()
@@ -60,6 +74,14 @@ public class BulletSystem : ComponentSystem
             float length = _Bullet.Speed * deltatime;
             if (Physics.Raycast(ray, out hit, length, _Bullet.TargetLayerMask))
             {
+                LifeTimerWithObjectPool hiteffect = ObjectPool.GetObject<LifeTimerWithObjectPool>(BulletHitPrefabs[(int)_Bullet.BulletType].name);
+                if (hiteffect)
+                {
+                    hiteffect.Initialize();
+                    hiteffect.transform.position = hit.point;
+                    hiteffect.gameObject.SetActive(true);
+                }
+
                 CharacterBase character = hit.transform.GetComponent<CharacterBase>();
                 if (character)
                 {

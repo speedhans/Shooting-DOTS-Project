@@ -25,6 +25,9 @@ public class InputManager : MonoBehaviour
     Dictionary<KeyCode, System.Action> m_InputDownEventDic = new Dictionary<KeyCode, System.Action>();
     Dictionary<KeyCode, System.Action> m_InputUpEventDic = new Dictionary<KeyCode, System.Action>();
     Dictionary<KeyCode, System.Action> m_InputPressedEventDic = new Dictionary<KeyCode, System.Action>();
+    System.Action<Vector2, Vector2, Vector2> m_MouseMoveEvent;
+
+    Vector2 m_BeforeMousePosition = Vector2.zero;
 
     bool m_ArrowSmoothOriginRegressionRun = false;
     public float m_ArrowSmoothOriginRegressionVelocityX = 1.0f;
@@ -55,6 +58,13 @@ public class InputManager : MonoBehaviour
                 m_InputPressedEventDic[k]?.Invoke();
             }
         }
+
+        Vector2 currentMousePos = Input.mousePosition;
+        if (m_BeforeMousePosition != currentMousePos)
+        {
+            m_MouseMoveEvent?.Invoke(m_BeforeMousePosition, currentMousePos, currentMousePos - m_BeforeMousePosition);
+        }
+        m_BeforeMousePosition = currentMousePos;
 
         float deltatime = Time.deltaTime;
         float increasespeed = deltatime * 10.0f;
@@ -98,6 +108,7 @@ public class InputManager : MonoBehaviour
     public void ArrowVectorSmoothOriginRegressionStop() { m_ArrowSmoothOriginRegressionRun = false; }
 
     public Vector2 GetArrowVector() { return m_ArrowVector; }
+    public Vector3 GetArrowVector3() { return new Vector3(m_ArrowVector.x, 0.0f, m_ArrowVector.y); }
     public void AddInputDownEvent(KeyCode _KeyCode, System.Action _Function)
     {
         System.Action action;
@@ -162,5 +173,23 @@ public class InputManager : MonoBehaviour
         {
             action -= _Function;
         }
+    }
+
+    /// <summary>
+    /// before, after, distance
+    /// </summary>
+    /// <param name="_Function"></param>
+    public void AddMouseMoveEvent(System.Action<Vector2, Vector2, Vector2> _Function)
+    {
+        m_MouseMoveEvent += _Function;
+    }
+
+    /// <summary>
+    /// before, after, distance
+    /// </summary>
+    /// <param name="_Function"></param>
+    public void ReleaseMouseMoveEvent(System.Action<Vector2, Vector2, Vector2> _Function)
+    {
+        m_MouseMoveEvent -= _Function;
     }
 }

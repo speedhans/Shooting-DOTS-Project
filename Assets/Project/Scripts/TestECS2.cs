@@ -20,7 +20,7 @@ public class TestECS2 : MonoBehaviour, IConvertGameObjectToEntity
 
         EntityManager manager = dstManager;//World.DefaultGameObjectInjectionWorld.EntityManager;
 
-        EntityArchetype arch = manager.CreateArchetype(typeof(Translation), typeof(TrailVelocityComponent), typeof(TrailBufferElement));
+        EntityArchetype arch = manager.CreateArchetype(typeof(Translation), typeof(TrailVelocityComponent), typeof(TrailComponent), typeof(TrailBufferElement));
         Random random = new Random(99);
         for (int i = 0; i < m_ParticleCount; ++i)
         {
@@ -28,6 +28,7 @@ public class TestECS2 : MonoBehaviour, IConvertGameObjectToEntity
             manager.SetName(entity, "Trail_" + i.ToString());
             manager.SetComponentData(entity, new Translation() { Value = new float3(1, 1, 1) });
             manager.SetComponentData(entity, new TrailVelocityComponent() { Value = random.NextFloat3Direction() });
+            manager.SetComponentData(entity, new TrailComponent() { MeshCount = 20 });
             DynamicBuffer<TrailBufferElement> buffer = manager.GetBuffer<TrailBufferElement>(entity);
             buffer.Add(new TrailBufferElement(new float3(1, 1, 1)));
         }

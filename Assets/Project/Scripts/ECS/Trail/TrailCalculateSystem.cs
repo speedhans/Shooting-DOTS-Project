@@ -10,11 +10,11 @@ using Unity.Burst;
 public class TrailCalculateSystem : JobComponentSystem
 {
     [BurstCompile]
-    struct TrailJob : IJobForEachWithEntity_EBC<TrailBufferElement, Translation>
+    struct TrailJob : IJobForEachWithEntity_EBCC<TrailBufferElement, Translation, TrailComponent>
     {
-        public void Execute(Entity entity, int index, DynamicBuffer<TrailBufferElement> buffer, ref Translation _Translation)
+        public void Execute(Entity entity, int index, DynamicBuffer<TrailBufferElement> buffer, ref Translation _Translation, ref TrailComponent _TrailComponent)
         {
-            if (buffer.Length > 10)
+            if (buffer.Length > _TrailComponent.MeshCount)
                 buffer.RemoveAt(0);
             DynamicBuffer<float3> rbuffer = buffer.Reinterpret<float3>();
             rbuffer.Add(_Translation.Value);
