@@ -11,7 +11,7 @@ public class PlayerAttackComponent : CharacterBaseComponent
     {
         base.Initialize(_CharacterBase);
 
-        m_TargetLayerMask = 1 << LayerMask.NameToLayer("Character") | 1 << LayerMask.NameToLayer("Ground");
+        m_TargetLayerMask = 1 << LayerMask.NameToLayer("AICharacter") | 1 << LayerMask.NameToLayer("Ground") | 1 << LayerMask.NameToLayer("Obstacle");
 
         InputManager.Instance.AddInputDownEvent(KeyCode.Mouse0, AttackEnable);
         InputManager.Instance.AddInputPressedEvent(KeyCode.Mouse0, Attack);
@@ -64,8 +64,9 @@ public class PlayerAttackComponent : CharacterBaseComponent
 
             for (int i = 0; i < m_CharacterBase.GetGunAttachCount(); ++i)
             {
-                SoundManager.Instance.PlayDefaultSound(m_CharacterBase.GetGun(i).GetFireSound());
-                BulletSystem.CreateBullet(m_CharacterBase.GetGun(i).GetFirePoint().position, 1.0f,E_BulletType.ORANGE, 1.0f, m_CharacterBase.GetUpperBodyDirection(), 30.0f, m_TargetLayerMask, 5);
+                SoundManager.Instance.PlayInstanceSound(m_CharacterBase.GetGun(i).GetFirePoint().position, m_CharacterBase.GetGun(i).GetFireSound());
+                BulletSystem.CreateBullet(m_CharacterBase.GetGun(i).GetFirePoint().position, 1.0f,
+                    m_CharacterBase.m_CharacterID, E_BulletType.ORANGE, 1, m_CharacterBase.GetUpperBodyDirection(), 30.0f, m_TargetLayerMask, 5);
             }
         }
     }

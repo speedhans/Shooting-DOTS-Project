@@ -19,7 +19,7 @@ public class PlayerMovementComponent : CharacterBaseComponent
     {
         base.Initialize(_CharacterBase);
 
-        m_GroundLayer = 1 << LayerMask.NameToLayer("Ground");
+        m_GroundLayer = 1 << LayerMask.NameToLayer("Ground") | 1 << LayerMask.NameToLayer("Obstacle");
 
         InputManager.Instance.AddInputDownEvent(KeyCode.Space, Jump);
         InputManager.Instance.AddInputPressedEvent(KeyCode.W, PositionMove);

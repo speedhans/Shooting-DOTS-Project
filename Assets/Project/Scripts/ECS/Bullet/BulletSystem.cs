@@ -16,13 +16,15 @@ public enum E_BulletType
 
 public struct BulletComponent : IComponentData
 {
+    public int HostID;
     public E_BulletType BulletType;
-    public float Damage;
+    public int Damage;
     public float3 Direction;
     public float Speed;
     public LayerMask TargetLayerMask;
-    public BulletComponent(E_BulletType _Type, float _Damage, float3 _Direction, float _Speed, LayerMask _TargetLayerMask)
+    public BulletComponent(int _HostID, E_BulletType _Type, int _Damage, float3 _Direction, float _Speed, LayerMask _TargetLayerMask)
     {
+        HostID = _HostID;
         BulletType = _Type;
         Damage = _Damage;
         Direction = _Direction;
@@ -38,13 +40,13 @@ public class BulletSystem : ComponentSystem
     static EntityManager m_EntityManger;
     static EntityArchetype m_BulletArchetype;
 
-    static public void CreateBullet(float3 _StartPosition, float _LifeTime, E_BulletType _Type, float _Damage, float3 _Direction, float _Speed, LayerMask _TargetLayerMask, int _TrailMeshCount = 10)
+    static public void CreateBullet(float3 _StartPosition, float _LifeTime, int _HostID, E_BulletType _Type, int _Damage, float3 _Direction, float _Speed, LayerMask _TargetLayerMask, int _TrailMeshCount = 10)
     {
         int meshcount = _TrailMeshCount;
 
         Entity entity = m_EntityManger.CreateEntity(m_BulletArchetype);
         m_EntityManger.SetComponentData(entity, new Translation() { Value = _StartPosition });
-        m_EntityManger.SetComponentData(entity, new BulletComponent(_Type, _Damage, _Direction, _Speed, _TargetLayerMask));
+        m_EntityManger.SetComponentData(entity, new BulletComponent(_HostID, _Type, _Damage, Unity.Mathematics.math.normalize(_Direction), _Speed, _TargetLayerMask));
         m_EntityManger.SetComponentData(entity, new TrailComponent() { MeshCount = meshcount });
         m_EntityManger.SetComponentData(entity, new LifeTimerComponent(_LifeTime));
         DynamicBuffer<TrailBufferElement> buffer = m_EntityManger.GetBuffer<TrailBufferElement>(entity);
@@ -87,6 +89,7 @@ public class BulletSystem : ComponentSystem
                 {
                     Debug.Log("character hit!!");
                     m_EntityManger.DestroyEntity(_Entity);
+                    character.GiveToDamage(_Bullet.HostID, _Bullet.Damage);
                 }
                 else
                 {

@@ -192,4 +192,12 @@ public class InputManager : MonoBehaviour
     {
         m_MouseMoveEvent -= _Function;
     }
+
+    private void OnApplicationQuit()
+    {
+        m_InputDownEventDic.Clear();
+        m_InputPressedEventDic.Clear();
+        m_InputUpEventDic.Clear();
+        m_MouseMoveEvent = null;
+    }
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
+    static int MaximumFXCount = 10;
+
     static SoundManager single;
     static public SoundManager Instance
     {
@@ -37,6 +39,9 @@ public class SoundManager : MonoBehaviour
         m_InstanceAudioPrefab.transform.SetParent(this.transform);
         AudioSource audio = m_InstanceAudioPrefab.AddComponent<AudioSource>();
         audio.spatialBlend = 1.0f;
+        audio.spread = 360.0f;
+        audio.rolloffMode = AudioRolloffMode.Linear;
+        audio.maxDistance = 25.0f;
         m_InstanceAudioList.Add(audio);
         for (int i = 0; i < 9; ++i)
         {
@@ -80,6 +85,13 @@ public class SoundManager : MonoBehaviour
             }
         }
 
+        if (m_InstanceAudioList.Count >= MaximumFXCount)
+        {
+            m_InstanceAudioList[0].transform.position = _AudioPosition;
+            m_InstanceAudioList[0].PlayOneShot(_Clip);
+            return m_InstanceAudioList[0];
+        }
+
         AudioSource a = CreateInstanceAudio();
         a.transform.position = transform.position = _AudioPosition;
         a.PlayOneShot(_Clip);
@@ -106,6 +118,19 @@ public class SoundManager : MonoBehaviour
             }
         }
 
+        if (m_DefaultAudioList.Count >= MaximumFXCount)
+        {
+            for (int i = 0; i < m_DefaultAudioList.Count; ++i)
+            {
+                if (m_DefaultAudioList[i].loop != _Loop)
+                {
+                    m_DefaultAudioList[i].PlayOneShot(_Clip);
+                    return m_DefaultAudioList[i];
+                }
+            }
+            return null;
+        }
+
         AudioSource a = CreateDefaultAudio();
         a.PlayOneShot(_Clip);
         m_DefaultAudioList.Add(a);
@@ -121,7 +146,7 @@ public class SoundManager : MonoBehaviour
 
         foreach (AudioSource a in m_DefaultAudioList)
         {
-            a.volume = _Volume;
+            a.volume = _Volume * 0.75f;
         }
     }
 }

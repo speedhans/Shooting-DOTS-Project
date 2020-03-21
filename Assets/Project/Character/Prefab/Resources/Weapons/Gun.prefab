@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbaff5293a7b9ee48b7d89b508091ac5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FireSound: {fileID: 8300000, guid: e941a406e519c414c80b9d68532b325c, type: 3}
+  m_FireSound: {fileID: 8300000, guid: 933ea318f19e372409ccbd4dff225050, type: 3}
   m_FirePoint: {fileID: 2497294858680532183}
   m_FireEffectPrefab: {fileID: 4577116422437845826, guid: f580c5cb9546482438e99448bb6c55c3,
     type: 3}

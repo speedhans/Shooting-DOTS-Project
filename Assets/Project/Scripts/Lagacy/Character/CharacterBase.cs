@@ -12,7 +12,7 @@ public class CharacterBase : MonoBehaviour
 {
     public const string m_AnimGunAttackKey = "GunAttackStart";
     public const string m_AnimIdleKey = "Idle";
-
+    bool DestoryThisGameObject = false;
     public enum E_UpperBodyAnimState
     {
         IDLE,
@@ -65,9 +65,7 @@ public class CharacterBase : MonoBehaviour
 
     protected List<CharacterBaseComponent> m_ComponentList = new List<CharacterBaseComponent>();
 
-    [SerializeField]
-    protected NavMeshController m_NavMeshController = new NavMeshController();
-
+    public int m_CharacterID;
     public int m_Health;
     public int m_HealthMax;
 
@@ -75,7 +73,6 @@ public class CharacterBase : MonoBehaviour
     {
         m_UpperAnimState = E_UpperBodyAnimState.IDLE;
         m_UnderAnimState = E_UnderBodyAnimState.LAND;
-
         GameObject model = Instantiate(m_Model, transform);
         model.transform.localPosition = Vector3.zero;
         model.transform.localRotation = Quaternion.identity;
@@ -178,7 +175,6 @@ public class CharacterBase : MonoBehaviour
     protected virtual void Update()
     {
         float deltatime = Time.deltaTime;
-
         for (int i = 0; i < m_ComponentList.Count; ++i)
         {
             m_ComponentList[i].UpdateComponent(deltatime);
@@ -208,6 +204,11 @@ public class CharacterBase : MonoBehaviour
         m_UpperBidyAddAngle.z = Mathf.Clamp(m_UpperBidyAddAngle.z += _AngleX, -m_MaximumChestAxisX, m_MaximumChestAxisX);
     }
 
+    public void SetUpperBodyAngleX(float _AngleX) // chest 본이 돌아가 있어서 z 축으로 해야함
+    {
+        m_UpperBidyAddAngle.z = Mathf.Clamp(_AngleX, -m_MaximumChestAxisX, m_MaximumChestAxisX);
+    }
+
     public Vector3 GetUpperBodyDirection() // chest 본이 돌아가 있어서 축을 교환해야 함
     {
         return (transform.rotation * Quaternion.Euler(-m_UpperBidyAddAngle.z, m_UpperBidyAddAngle.x, m_UpperBidyAddAngle.y)) * Vector3.forward;
@@ -218,7 +219,6 @@ public class CharacterBase : MonoBehaviour
         return new Vector3(-m_UpperBidyAddAngle.z, m_UpperBidyAddAngle.x, m_UpperBidyAddAngle.y);
     }
 
-    public NavMeshController GetNavMeshController() { return m_NavMeshController; }
     public Gun GetGun(int _Index) { return m_Gun[_Index]; }
     public Gun[] GetGuns() { return m_Gun; }
     public int GetGunAttachCount() { return m_Gun.Length; }
@@ -233,7 +233,7 @@ public class CharacterBase : MonoBehaviour
         }
     }
 
-    public void GiveToDamage(int _Damage)
+    public void GiveToDamage(int _AttackerID, int _Damage)
     {
         if (m_Live == E_Live.DEAD) return;
 
@@ -241,14 +241,23 @@ public class CharacterBase : MonoBehaviour
         if (m_Health <= 0.0f)
         {
             m_Live = E_Live.DEAD;
+            m_UpperBidyAddAngle = Vector3.zero;
         }
     }
 
-    public void OnDrawGizmos()
+    private void OnDestroy()
     {
-        if (!Application.isPlaying) return;
-        Gizmos.matrix = Matrix4x4.identity;
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(m_ChestBone.position, m_ChestBone.position + m_ChestBone.forward * 100.0f);
+        if (DestoryThisGameObject) return;
+
+        foreach(CharacterBaseComponent c in m_ComponentList)
+        {
+            c.DestoryComponent();
+        }
+        m_ComponentList.Clear();
+    }
+
+    private void OnApplicationQuit()
+    {
+        DestoryThisGameObject = true;
     }
 }

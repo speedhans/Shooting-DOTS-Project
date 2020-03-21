@@ -156,6 +156,16 @@ public class NavMeshController
         return list;
     }
 
+    public Vector3 GetCurrentPathDirection(Transform _Transform)
+    {
+        if (m_ListAvoidNavPath.Count > 0)
+            return m_ListAvoidNavPath[0] - _Transform.position;
+        else if (m_ListNavPath.Count > 0)
+            return m_ListNavPath[0] - _Transform.position;
+
+        return Vector3.zero;
+    }
+
     public void ClearPath()
     {
         m_ListAvoidNavPath.Clear();
