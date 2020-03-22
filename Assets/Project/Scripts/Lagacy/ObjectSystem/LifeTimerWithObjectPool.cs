@@ -20,7 +20,7 @@ public class LifeTimerWithObjectPool : MonoBehaviour
 
     private void Update()
     {
-        m_LifeTimer -= Time.deltaTime;
+        m_LifeTimer -= Time.deltaTime * GameManager.Instance.TimeScale;
         if (m_LifeTimer <= 0.0f)
         {
             ObjectPool.PushObject(gameObject);

@@ -32,6 +32,7 @@ public class AIRotateComponent :CharacterBaseComponent
             float dirAngle = Vector3.Angle(cdir, dir);
 
             m_AICharacter.SetUpperBodyAngleX(dir.y < 0.0f ? -dirAngle : dirAngle);
+            m_AICharacter.UpperBodyYAngleOffsetPercentage = dir.magnitude / m_AICharacter.GetAIData().AttackRange;
 
             focusingdir = (m_AICharacter.m_TargetCharacter.transform.position - m_AICharacter.transform.position).normalized;
         }

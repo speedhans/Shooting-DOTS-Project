@@ -22,6 +22,7 @@ public class InputManager : MonoBehaviour
     
 
     Vector2 m_ArrowVector = Vector2.zero;
+    Vector2 m_ArrowVectorInstance = Vector2.zero;
     Dictionary<KeyCode, System.Action> m_InputDownEventDic = new Dictionary<KeyCode, System.Action>();
     Dictionary<KeyCode, System.Action> m_InputUpEventDic = new Dictionary<KeyCode, System.Action>();
     Dictionary<KeyCode, System.Action> m_InputPressedEventDic = new Dictionary<KeyCode, System.Action>();
@@ -66,22 +67,28 @@ public class InputManager : MonoBehaviour
         }
         m_BeforeMousePosition = currentMousePos;
 
+        m_ArrowVectorInstance = Vector2.zero;
+
         float deltatime = Time.deltaTime;
         float increasespeed = deltatime * 10.0f;
         if (Input.GetKey(KeyCode.W))
         {
+            m_ArrowVectorInstance.y += 1.0f;
             m_ArrowVector.y += increasespeed;
         }
         if (Input.GetKey(KeyCode.S))
         {
+            m_ArrowVectorInstance.y -= 1.0f;
             m_ArrowVector.y -= increasespeed;
         }
         if (Input.GetKey(KeyCode.A))
         {
+            m_ArrowVectorInstance.x -= 1.0f;
             m_ArrowVector.x -= increasespeed;
         }
         if (Input.GetKey(KeyCode.D))
         {
+            m_ArrowVectorInstance.x += 1.0f;
             m_ArrowVector.x += increasespeed;
         }
 
@@ -108,7 +115,9 @@ public class InputManager : MonoBehaviour
     public void ArrowVectorSmoothOriginRegressionStop() { m_ArrowSmoothOriginRegressionRun = false; }
 
     public Vector2 GetArrowVector() { return m_ArrowVector; }
+    public Vector2 GetArrowVectorInstance() { return m_ArrowVectorInstance; }
     public Vector3 GetArrowVector3() { return new Vector3(m_ArrowVector.x, 0.0f, m_ArrowVector.y); }
+    public Vector3 GetArrowVector3Instance() { return new Vector3(m_ArrowVectorInstance.x, 0.0f, m_ArrowVectorInstance.y); }
     public void AddInputDownEvent(KeyCode _KeyCode, System.Action _Function)
     {
         System.Action action;

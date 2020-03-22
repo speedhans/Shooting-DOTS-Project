@@ -39,7 +39,7 @@ public class LifeTimerSystem : JobComponentSystem
     {
         var job = new LifeTimerJob()
         {
-            DeltaTime = Time.DeltaTime,
+            DeltaTime = Time.DeltaTime * GameManager.Instance.TimeScale,
             CommandBuffer = m_EndSimulationEcbSystem.CreateCommandBuffer().ToConcurrent()
         }.Schedule(this, inputDeps);
         job.Complete();

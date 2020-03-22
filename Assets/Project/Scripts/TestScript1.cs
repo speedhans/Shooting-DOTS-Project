@@ -4,20 +4,15 @@ using UnityEngine;
 
 public class TestScript1 : MonoBehaviour
 {
-    public AIData[] m_Datas;
-    public GameObject m_Prefab;
+    public GameObject[] m_Prefab;
     public int m_SpawnCount;
     public Transform m_SpawnPos;
     private void Start()
     {
-        int l = (m_Datas.Length - 1);
+        int l = (m_Prefab.Length);
         for (int i = 0; i < m_SpawnCount; ++i)
         {
-            AICharacter c = Instantiate(m_Prefab, m_SpawnPos.position + new Vector3(i * 1.0f + 1.0f, 0.0f, (i % 10)), Quaternion.identity).GetComponent<AICharacter>();
-            if (c)
-            {
-                c.m_AIData = m_Datas[i % l];
-            }
+            AICharacter c = Instantiate(m_Prefab[i % l], m_SpawnPos.position + new Vector3(i * 1.0f + 1.0f, 0.0f, (i % 10)), Quaternion.identity).GetComponent<AICharacter>();
         }
     }
 

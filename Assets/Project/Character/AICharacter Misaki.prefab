@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 573182812393668609}
   - component: {fileID: 7769909914231184229}
   m_Layer: 9
-  m_Name: AICharacter
+  m_Name: AICharacter Misaki
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -78,7 +78,7 @@ MonoBehaviour:
   m_Live: 0
   m_UpperAnimState: 0
   m_UnderAnimState: 0
-  m_Model: {fileID: 7784884534895150106, guid: 960f2e8f5e7e10e489811c3018bc155c, type: 3}
+  m_Model: {fileID: 6896195450999601113, guid: 1f30b05ed1acf1948b401d59db6cc03c, type: 3}
   m_BodyPosition: {x: 0, y: 0.5, z: 0}
   m_FacePosition: {x: 0, y: 0.7, z: 0}
   m_UpperBodyAngleOffset: {x: 100, y: 0, z: 15}

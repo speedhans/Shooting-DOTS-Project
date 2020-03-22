@@ -93,6 +93,7 @@ public class PlayerMovementComponent : CharacterBaseComponent
     {
         if (m_CharacterBase.m_Live == CharacterBase.E_Live.DEAD) return;
         if (m_CharacterBase.m_UnderAnimState == CharacterBase.E_UnderBodyAnimState.JUMP) return;
+        if (m_CharacterBase.m_UnderAnimState == CharacterBase.E_UnderBodyAnimState.CAST) return;
         if (m_PostionUpdate) return;
         m_PostionUpdate = true;
         m_CharacterBase.transform.position += (m_CharacterBase.transform.rotation * InputManager.Instance.GetArrowVector3().normalized) * Time.deltaTime * m_MovementSpeed;
@@ -107,7 +108,7 @@ public class PlayerMovementComponent : CharacterBaseComponent
         ++m_JumpingCount;
         m_CharacterBase.m_Animator.CrossFade("Jump", 0.25f);
         m_CharacterBase.m_UnderAnimState = CharacterBase.E_UnderBodyAnimState.JUMP;
-        Vector3 dir = InputManager.Instance.GetArrowVector3();
+        Vector3 dir = InputManager.Instance.GetArrowVector3Instance();
         if (Mathf.Abs(dir.x) > 0.1f || Mathf.Abs(dir.z) > 0.1f)
         {
             Vector3 speed = m_CharacterBase.transform.rotation * InputManager.Instance.GetArrowVector().normalized;

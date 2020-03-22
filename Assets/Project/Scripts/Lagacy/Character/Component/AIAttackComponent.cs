@@ -26,18 +26,19 @@ public class AIAttackComponent : CharacterBaseComponent
         if (m_AICharacter.m_Live == CharacterBase.E_Live.DEAD) return;
         if (!m_AICharacter.m_TargetCharacter) return;
 
-        if (m_AttackDelay > 0.0f)
-        {
-            m_AttackDelay -= _DeltaTime;
-            return;
-        }
-
         if (m_AICharacter.GetAIState() != AICharacter.E_AIState.ATTACK) return;
 
         if (m_AICharacter.m_UpperAnimState != CharacterBase.E_UpperBodyAnimState.ATTACK)
         {
             m_AICharacter.m_UpperAnimState = CharacterBase.E_UpperBodyAnimState.ATTACK;
-            m_CharacterBase.m_Animator.CrossFade(CharacterBase.m_AnimGunAttackKey, 0.1f);
+            m_CharacterBase.m_Animator.CrossFade(CharacterBase.m_AnimGunAttackKey, 0.1f * GameManager.Instance.TimeScale);
+            m_AttackDelay = 0.1f;
+        }
+
+        if (m_AttackDelay > 0.0f)
+        {
+            m_AttackDelay -= _DeltaTime;
+            return;
         }
 
         m_AttackDelay = m_AICharacter.GetAIData().AttackDelay;
@@ -50,10 +51,11 @@ public class AIAttackComponent : CharacterBaseComponent
         Vector3 upperbodyDir = m_AICharacter.GetUpperBodyDirection();
         Vector3 upperbodyDirNormal = upperbodyDir.normalized;
         Vector3 targetDir = m_AICharacter.m_TargetCharacter.transform.position - m_AICharacter.transform.position;
+        float tdistance = targetDir.magnitude;
         float d = Vector3.Dot(upperbodyDirNormal, targetDir.normalized);
-        if (d > 0.95f)
+        if (d > 0.95f && tdistance <= m_AICharacter.GetAIData().AttackRange)
         {
-            if (Physics.Raycast(m_AICharacter.GetBodyPositionWithWorld(), upperbodyDirNormal, targetDir.magnitude * 0.3f, m_ObstacleLayerMask))
+            if (Physics.Raycast(m_AICharacter.GetBodyPositionWithWorld(), upperbodyDirNormal, tdistance * 0.3f, m_ObstacleLayerMask))
             {
                 foreach (Gun g in m_CharacterBase.GetGuns())
                     g.GunShotDisable();

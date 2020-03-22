@@ -10,6 +10,9 @@ public class PlayerCharacter : CharacterBase
     {
         base.Awake();
 
+        GameManager.Instance.m_PlayerCharacter = this;
+
+        UseTimeScale = false;
         SetComponent<PlayerMovementComponent>(this);
         SetComponent<PlayerAttackComponent>(this);
         SetComponent<PlayerRotateComponent>(this);

@@ -30,6 +30,7 @@ public class AICharacter : CharacterBase
     {
         base.Awake();
 
+        UseTimeScale = true;
         SetComponent<AIChaseComponent>(this);
         SetComponent<AIAttackComponent>(this);
         SetComponent<AIMovementComponent>(this);
@@ -42,9 +43,6 @@ public class AICharacter : CharacterBase
         base.Update();
 
         EnemyAreaSearch();
-
-        Debug.Log(m_UpperAnimState.ToString() + " : " + m_UnderAnimState.ToString());
-        Debug.Log(m_AIState);
     }
 
     void EnemyAreaSearch()

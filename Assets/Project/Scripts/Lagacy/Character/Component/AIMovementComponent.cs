@@ -29,7 +29,7 @@ public class AIMovementComponent : CharacterBaseComponent
         Vector3 dir = m_AICharacter.GetNavMeshController().GetCurrentPathDirection(m_CharacterBase.transform).normalized;
         m_AICharacter.m_Animator.SetFloat("DirectionX", dir.x);
         m_AICharacter.m_Animator.SetFloat("DirectionY", dir.z);
-        m_AICharacter.GetNavMeshController().UpdateTransform(m_CharacterBase.transform, m_AICharacter.GetAIData().MoveSpeed, m_RotatePerSpeed);
+        m_AICharacter.GetNavMeshController().UpdateTransform(m_CharacterBase.transform, m_AICharacter.GetAIData().MoveSpeed, m_RotatePerSpeed, _DeltaTime);
     }
 
     public override void LateUpdateComponent(float _DeltaTime)

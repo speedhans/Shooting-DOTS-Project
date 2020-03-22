@@ -28,11 +28,11 @@ public class NavMeshController
     List<Vector3> m_ListNavPath = new List<Vector3>();
     List<Vector3> m_ListAvoidNavPath = new List<Vector3>();
 
-    public void UpdateTransform(Transform _Transform, float _MovePerSpeed, float _RotatePerSpeed)
+    public void UpdateTransform(Transform _Transform, float _MovePerSpeed, float _RotatePerSpeed, float _DeltaTime)
     {
         if (m_ListNavPath.Count == 0 && m_ListAvoidNavPath.Count == 0) return;
 
-        float deltatime = Time.deltaTime;
+        float deltatime = _DeltaTime;
         Vector3 dir = Vector3.zero;
         if (m_ListAvoidNavPath.Count > 0)
             dir = m_ListAvoidNavPath[0] - _Transform.position;

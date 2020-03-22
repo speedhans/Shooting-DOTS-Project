@@ -17,12 +17,14 @@ public class CharacterBase : MonoBehaviour
     {
         IDLE,
         ATTACK,
+        CAST,
     }
 
     public enum E_UnderBodyAnimState
     {
         LAND,
         JUMP,
+        CAST,
     }
 
     public enum E_Live
@@ -32,6 +34,7 @@ public class CharacterBase : MonoBehaviour
     }
 
     public E_Live m_Live = E_Live.LIVE;
+
     [HideInInspector]
     public E_UpperBodyAnimState m_UpperAnimState;
     [HideInInspector]
@@ -57,8 +60,19 @@ public class CharacterBase : MonoBehaviour
 
     [SerializeField]
     Vector3 m_UpperBodyAngleOffset;
+    float m_UpperBodyYAngleOffsetPercentage = 1.0f;
+    public float UpperBodyYAngleOffsetPercentage
+    { 
+        get
+        {
+            return m_UpperBodyYAngleOffsetPercentage;
+        }
+        set
+        {
+            m_UpperBodyYAngleOffsetPercentage = Mathf.Clamp01(value);
+        }
+    }
     Vector3 m_UpperBidyAddAngle;
-    
     public float m_MaximumChestAxisX;
 
     protected Gun[] m_Gun = new Gun[2];
@@ -68,6 +82,24 @@ public class CharacterBase : MonoBehaviour
     public int m_CharacterID;
     public int m_Health;
     public int m_HealthMax;
+
+    bool m_UseTimeScale;
+    protected bool UseTimeScale
+    {
+        get
+        {
+            return m_UseTimeScale;
+        }
+        set
+        {
+            m_UseTimeScale = value;
+            if (m_UseTimeScale)
+                GameManager.Instance.m_TimeScaleAnimatorList.Add(m_Animator);
+            else
+                GameManager.Instance.m_TimeScaleAnimatorList.Remove(m_Animator);
+        }
+    }
+
 
     protected virtual void Awake()
     {
@@ -174,7 +206,7 @@ public class CharacterBase : MonoBehaviour
 
     protected virtual void Update()
     {
-        float deltatime = Time.deltaTime;
+        float deltatime = m_UseTimeScale ? Time.deltaTime * GameManager.Instance.TimeScale : Time.deltaTime;
         for (int i = 0; i < m_ComponentList.Count; ++i)
         {
             m_ComponentList[i].UpdateComponent(deltatime);
@@ -183,7 +215,7 @@ public class CharacterBase : MonoBehaviour
 
     protected virtual void LateUpdate()
     {
-        float deltatime = Time.deltaTime;
+        float deltatime = m_UseTimeScale ? Time.deltaTime * GameManager.Instance.TimeScale : Time.deltaTime;
         for (int i = 0; i < m_ComponentList.Count; ++i)
         {
             m_ComponentList[i].LateUpdateComponent(deltatime);
@@ -191,9 +223,11 @@ public class CharacterBase : MonoBehaviour
 
         if (m_Live == E_Live.DEAD || !m_ChestBone) return;
 
-        //m_ChestBone.LookAt(m_ChestTarget);
         if (m_UpperAnimState == E_UpperBodyAnimState.ATTACK)
-            m_ChestBone.rotation = m_ChestBone.rotation * Quaternion.Euler(m_UpperBidyAddAngle + m_UpperBodyAngleOffset);
+            m_ChestBone.rotation = m_ChestBone.rotation * Quaternion.Euler(new Vector3(
+                m_UpperBidyAddAngle.x + (m_UpperBodyAngleOffset.x * m_UpperBodyYAngleOffsetPercentage),
+                m_UpperBidyAddAngle.y + m_UpperBodyAngleOffset.y,
+                m_UpperBidyAddAngle.z + m_UpperBodyAngleOffset.z));
     }
 
     public Vector3 GetBodyPositionWithWorld() { return transform.position + m_BodyPosition; }
@@ -242,6 +276,22 @@ public class CharacterBase : MonoBehaviour
         {
             m_Live = E_Live.DEAD;
             m_UpperBidyAddAngle = Vector3.zero;
+        }
+    }
+
+    public void SetCastMode(bool _UpperCast = true, bool _UnderCast = true)
+    {
+        if (_UpperCast)
+        {
+            m_UpperAnimState = E_UpperBodyAnimState.CAST;
+            m_Animator.CrossFade("UpperBody.Cast1", 0.1f);
+            foreach (Gun g in GetGuns())
+                g.GunShotDisable();
+        }
+        if (_UnderCast)
+        {
+            m_UnderAnimState = E_UnderBodyAnimState.CAST;
+            m_Animator.CrossFade("UnderBody.Cast1", 0.1f);
         }
     }
 

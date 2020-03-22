@@ -66,7 +66,7 @@ public class BulletSystem : ComponentSystem
 
     protected override void OnUpdate()
     {
-        float deltatime = Time.DeltaTime;
+        float deltatime = Time.DeltaTime * GameManager.Instance.TimeScale;
 
         Entities.ForEach((Entity _Entity, ref BulletComponent _Bullet, ref Translation _Translation) =>
         {

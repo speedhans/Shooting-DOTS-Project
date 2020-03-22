@@ -63,7 +63,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Project\Scripts\AnimationCallbackEvent.cs" />
     <Compile Include="Assets\Project\Scripts\ECS\Bullet\BulletSystem.cs" />
     <Compile Include="Assets\Project\Scripts\ECS\Bullet\BulletSystemAuthoring.cs" />
     <Compile Include="Assets\Project\Scripts\ECS\LifeTimer\LifeTimerSystem.cs" />
@@ -78,6 +77,7 @@
     <Compile Include="Assets\Project\Scripts\ECS_DrawSprite.cs" />
     <Compile Include="Assets\Project\Scripts\ECS_DrawSpriteJob.cs" />
     <Compile Include="Assets\Project\Scripts\ECS_SpriteRenderer.cs" />
+    <Compile Include="Assets\Project\Scripts\Lagacy\AnimationCallbackEvent.cs" />
     <Compile Include="Assets\Project\Scripts\Lagacy\Camera\FollowCamera.cs" />
     <Compile Include="Assets\Project\Scripts\Lagacy\Character\AICharacter.cs" />
     <Compile Include="Assets\Project\Scripts\Lagacy\Character\CharacterBase.cs" />
@@ -100,13 +100,18 @@
     <Compile Include="Assets\Project\Scripts\Lagacy\ObjectPool.cs" />
     <Compile Include="Assets\Project\Scripts\Lagacy\ObjectSystem\Billboard.cs" />
     <Compile Include="Assets\Project\Scripts\Lagacy\ObjectSystem\LifeTimerWithObjectPool.cs" />
+    <Compile Include="Assets\Project\Scripts\Lagacy\Skill\ForceField.cs" />
+    <Compile Include="Assets\Project\Scripts\Lagacy\Skill\Skill.cs" />
+    <Compile Include="Assets\Project\Scripts\Lagacy\Skill\TimeAlter.cs" />
     <Compile Include="Assets\Project\Scripts\Lagacy\SoundManager.cs" />
     <Compile Include="Assets\Project\Scripts\Lagacy\System\NavMeshController.cs" />
+    <Compile Include="Assets\Project\Scripts\Lagacy\System\ParticleTimeScaler.cs" />
     <Compile Include="Assets\Project\Scripts\Lagacy\System\SoundClip.cs" />
     <Compile Include="Assets\Project\Scripts\TestComponent.cs" />
     <Compile Include="Assets\Project\Scripts\TestECS1.cs" />
     <Compile Include="Assets\Project\Scripts\TestECS2.cs" />
     <Compile Include="Assets\Project\Scripts\TestScript1.cs" />
+    <Compile Include="Assets\Project\Scripts\TestScript2.cs" />
     <Compile Include="Assets\Project\Scripts\sunTTHelper.cs" />
     <Compile Include="Assets\Scripts\SimpleCameraController.cs" />
     <Compile Include="Assets\Store\Model\SD Unity-Chan Haon Custom\Unity-Chan!\Script\RandomWind.cs" />
@@ -114,12 +119,14 @@
     <Compile Include="Assets\Store\Model\SD Unity-Chan Haon Custom\Unity-Chan!\Script\SpringCollider.cs" />
     <Compile Include="Assets\Store\Model\SD Unity-Chan Haon Custom\Unity-Chan!\Script\SpringManager.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <None Include="Assets\Project\Scripts\Shaders\ToonGrayScaleShader.shader" />
     <None Include="Assets\Store\Model\SD Unity-Chan Haon Custom\Shader\readme.txt" />
     <None Include="Assets\Store\Model\SD Unity-Chan Haon Custom\Shader\Unitychan_chara_eye.shader" />
     <None Include="Assets\Project\Scripts\Shaders\Includes\CustomLighting.hlsl" />
     <None Include="Assets\Store\Model\SD Unity-Chan Haon Custom\_Readme\Readme SD Unity-Chan Haon Custom Series.txt" />
     <None Include="Assets\Project\Scripts\Shaders\ECS_TrailShader.shader" />
     <None Include="Assets\Project\Scripts\Shaders\ECS_TrailShaderAddtive.shader" />
+    <None Include="Assets\Project\Scripts\Shaders\CustomSkyBoxShader.shader" />
     <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
       <HintPath>F:/Project/DOTS Shooting Project/Library/ScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
     </Reference>
