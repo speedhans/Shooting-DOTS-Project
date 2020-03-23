@@ -61,7 +61,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Clip:
   - {fileID: 8300000, guid: 052cb1f43a1c82d4e961840d7c5e845e, type: 3}
-  m_3D: 0
+  m_3D: 1
   m_Loop: 0
   m_AutoPlay: 1
 --- !u!114 &-6210731947252984466

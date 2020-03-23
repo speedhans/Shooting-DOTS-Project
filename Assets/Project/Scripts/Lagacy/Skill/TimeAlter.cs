@@ -22,7 +22,6 @@ public class TimeAlter : Skill
     protected override void SkillAction()
     {
         base.SkillAction();
-        Debug.Log("TimeAlter");
 
         LifeTimerWithObjectPool life = ObjectPool.GetObject<LifeTimerWithObjectPool>(m_CastStartEffectPrefab.name);
         if (life)
@@ -32,7 +31,7 @@ public class TimeAlter : Skill
             sunTT.sunTTHelper.SetLocalTransform(life.transform, Vector3.zero, Quaternion.identity);
             life.gameObject.SetActive(true);
         }
-        m_PlayerCharacter.SetCastMode(true, m_PlayerCharacter.m_UnderAnimState != CharacterBase.E_UnderBodyAnimState.JUMP);
+        m_PlayerCharacter.SetCastMode(1, true, m_PlayerCharacter.m_UnderAnimState != CharacterBase.E_UnderBodyAnimState.JUMP);
         m_SkillTimer = m_SkillDuration;
         if (m_Coroutine != null) return;
         m_Coroutine = StartCoroutine(C_SkillEvent(1.0f));
@@ -51,13 +50,11 @@ public class TimeAlter : Skill
 
         Shader.SetGlobalFloat("GrayScaleFactor", 1.0f);
         GameManager.Instance.TimeScale = 0.1f;
-        Debug.Log("time zero");
         while (m_SkillTimer > 0.0f)
         {
             m_SkillTimer -= Time.deltaTime;
             yield return null;
         }
-        Debug.Log("time one");
         Shader.SetGlobalFloat("GrayScaleFactor", 0.0f);
         GameManager.Instance.TimeScale = 1.0f;
 

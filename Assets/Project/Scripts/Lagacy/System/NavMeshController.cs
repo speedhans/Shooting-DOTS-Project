@@ -53,7 +53,7 @@ public class NavMeshController
                 if (avoideddirection != Vector3.zero)
                 {
                     List<Vector3> list = FindNavMeshPath(_Transform.position, _Transform.position + avoideddirection);
-                    if (list.Count > 0)
+                    if (list != null && list.Count > 0)
                     {
                         m_ListAvoidNavPath.Clear();
                         m_ListAvoidNavPath.AddRange(list);

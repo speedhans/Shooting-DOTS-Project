@@ -47,7 +47,6 @@
                     float2 uv : TEXCOORD0;
                     #ifdef SOFTPARTICLES_ON
                     float4 projPos : TEXCOORD1;
-                    float alphaclip : 
                     #endif
                 };
 

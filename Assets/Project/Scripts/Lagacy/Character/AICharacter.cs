@@ -30,6 +30,7 @@ public class AICharacter : CharacterBase
     {
         base.Awake();
 
+        IsAI = true;
         UseTimeScale = true;
         SetComponent<AIChaseComponent>(this);
         SetComponent<AIAttackComponent>(this);
@@ -56,7 +57,8 @@ public class AICharacter : CharacterBase
         for (int i = 0; i < coll.Length; ++i)
         {
             CharacterBase character = coll[i].GetComponent<CharacterBase>();
-            if (character == this) return;
+            if (character == this) continue;
+            if (character.m_Live == E_Live.DEAD) continue;
             float distance = Vector3.Distance(character.transform.position, transform.position);
             if (distcomp > distance)
             {

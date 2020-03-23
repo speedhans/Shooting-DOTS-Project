@@ -22,6 +22,10 @@ public class GameManager : MonoBehaviour
 
     void Initialize()
     {
+#if !UNITY_EDITOR
+        Debug.unityLogger.logEnabled = false;
+#endif
+
         TimeScale = 1.0f;
         SoundManager.Instance.enabled = true;
         InputManager.Instance.ArrowVectorSmoothOriginRegressionRun();

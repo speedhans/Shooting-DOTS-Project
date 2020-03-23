@@ -52,6 +52,7 @@ public class Skill : MonoBehaviour
 
     protected virtual void SkillAction()
     {
+        if (Time.timeScale == 0.0f) return;
         if (m_PlayerCharacter.m_UpperAnimState == CharacterBase.E_UpperBodyAnimState.CAST) return;
         if (m_CooldownTimer > 0.0f) return;
         m_CooldownTimer = m_Cooldown;

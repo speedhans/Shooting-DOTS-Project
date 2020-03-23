@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class TestScript2 : MonoBehaviour
 {
-    [Range(0.0f, 1.0f)]
-    public float grayfactor = 0.0f;
-    float before;
-    public Color graycolor = Color.white;
 
     // Update is called once per frame
     void Update()
     {
-        Shader.SetGlobalColor("GrayScaleColor", graycolor);
-        Shader.SetGlobalFloat("GrayScaleFactor", grayfactor);
-        if (!Application.isPlaying) return;
-        if (before != grayfactor)
-            GameManager.Instance.TimeScale = 1.0f - grayfactor;
-        before = grayfactor;
+        Ray ray = new Ray(transform.position, transform.forward);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100.0f, 1 << LayerMask.NameToLayer("Default"), QueryTriggerInteraction.Collide))
+        {
+            Debug.DrawLine(transform.position, hit.point, Color.red);
+        }
+        else
+        {
+            Debug.DrawLine(transform.position, transform.position + transform.forward * 100.0f, Color.blue);
+        }
     }
 }

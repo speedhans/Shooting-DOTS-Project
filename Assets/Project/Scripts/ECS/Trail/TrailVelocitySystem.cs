@@ -12,6 +12,7 @@ public struct TrailVelocityComponent : IComponentData
     public float3 Value;
 }
 
+[DisableAutoCreation]
 public class TrailVelocitySystem : JobComponentSystem
 {
     [BurstCompile]

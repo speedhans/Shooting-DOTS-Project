@@ -128,7 +128,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a53b3076d100dc4d8dcd47241bdf2b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_CameraLocalPosition: {x: 0, y: 1.2, z: -3}
+  m_CameraLocalPosition: {x: 0, y: 1.4, z: -4}
   m_CameraViewDirectionOffset: {x: 3, y: 0, z: 0}
-  m_test1: 0
-  m_test2: 1

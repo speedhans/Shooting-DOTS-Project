@@ -24,6 +24,12 @@ public class SoundManager : MonoBehaviour
 
     void Initialize()
     {
+        GameObject g = new GameObject("BGM Audio");
+        m_BGMPlayer = g.AddComponent<AudioSource>();
+        m_BGMPlayer.loop = false;
+        m_BGMPlayer.playOnAwake = false;
+        m_BGMPlayer.Stop();
+
         InitializeInstanceAudio();
         InitializeDefaultAudio();
     }
@@ -32,6 +38,12 @@ public class SoundManager : MonoBehaviour
     GameObject m_DefaultAudioPrefab;
     List<AudioSource> m_InstanceAudioList = new List<AudioSource>();
     List<AudioSource> m_DefaultAudioList = new List<AudioSource>();
+    List<AudioClip> m_BGMList = new List<AudioClip>();
+    int m_BGMNumber;
+    AudioSource m_BGMPlayer;
+    Coroutine m_BGMCoroutine;
+
+    float m_Volume; 
 
     void InitializeInstanceAudio()
     {
@@ -137,16 +149,48 @@ public class SoundManager : MonoBehaviour
         return a;
     }
 
+    public void PlayBGM(List<AudioClip> _Clip)
+    {
+        m_BGMList = _Clip;
+        m_BGMNumber = 0;
+
+        if (m_BGMCoroutine != null) StopCoroutine(m_BGMCoroutine);
+        m_BGMCoroutine = StartCoroutine(C_BGMPlay(3.0f));
+    }
+
+    IEnumerator C_BGMPlay(float _WaitTime)
+    {
+        while(true)
+        {
+            if (!m_BGMPlayer.isPlaying)
+            {
+                yield return new WaitForSeconds(_WaitTime);
+                m_BGMPlayer.clip = m_BGMList[m_BGMNumber];
+                m_BGMPlayer.Play();
+                ++m_BGMNumber;
+                if (m_BGMNumber >= m_BGMList.Count)
+                    m_BGMNumber = 0;
+            }
+
+            yield return null;
+        }
+    }
+
     public void SetVolume(float _Volume)
     {
+        m_Volume = Mathf.Clamp01(_Volume);
         foreach (AudioSource a in m_InstanceAudioList)
         {
-            a.volume = _Volume;
+            a.volume = _Volume * 0.5f;
         }
 
         foreach (AudioSource a in m_DefaultAudioList)
         {
-            a.volume = _Volume * 0.75f;
+            a.volume = _Volume;
         }
+
+        m_BGMPlayer.volume = _Volume * 0.7f;
     }
+
+    public float GetVolume() { return m_Volume; }
 }

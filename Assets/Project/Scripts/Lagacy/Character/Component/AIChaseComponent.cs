@@ -72,7 +72,6 @@ public class AIChaseComponent : CharacterBaseComponent
             float angle = m_AICharacter.transform.eulerAngles.y;
             float b = m_AICharacter.GetAIData().Belligerence;
             float offset = (distance / m_AICharacter.GetAIData().AttackRange) * b * 90.0f;
-            Debug.Log(offset);
             float fixedAngle = angle + Random.Range(-offset, offset);
             angle += angle < fixedAngle ? -(100.0f - offset) : 100.0f - offset;
 

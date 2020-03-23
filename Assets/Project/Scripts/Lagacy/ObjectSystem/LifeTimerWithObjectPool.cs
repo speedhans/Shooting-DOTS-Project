@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class LifeTimerWithObjectPool : MonoBehaviour
 {
-    [SerializeField]
-    float m_LifeTime;
+    public float m_LifeTime;
     float m_LifeTimer;
 
     private void Awake()

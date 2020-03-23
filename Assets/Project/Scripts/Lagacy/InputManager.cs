@@ -27,6 +27,7 @@ public class InputManager : MonoBehaviour
     Dictionary<KeyCode, System.Action> m_InputUpEventDic = new Dictionary<KeyCode, System.Action>();
     Dictionary<KeyCode, System.Action> m_InputPressedEventDic = new Dictionary<KeyCode, System.Action>();
     System.Action<Vector2, Vector2, Vector2> m_MouseMoveEvent;
+    System.Action<float> m_MouseWheelEvent;
 
     Vector2 m_BeforeMousePosition = Vector2.zero;
 
@@ -58,6 +59,12 @@ public class InputManager : MonoBehaviour
             {
                 m_InputPressedEventDic[k]?.Invoke();
             }
+        }
+
+        float wheel = Input.GetAxis("Mouse ScrollWheel");
+        if (wheel != 0.0f)
+        {
+            m_MouseWheelEvent?.Invoke(wheel);
         }
 
         Vector2 currentMousePos = Input.mousePosition;
@@ -202,11 +209,22 @@ public class InputManager : MonoBehaviour
         m_MouseMoveEvent -= _Function;
     }
 
+    public void AddMouseWheelEvent(System.Action<float> _Function)
+    {
+        m_MouseWheelEvent += _Function;
+    }
+
+    public void ReleaseMouseWheelEvent(System.Action<float> _Function)
+    {
+        m_MouseWheelEvent -= _Function;
+    }
+
     private void OnApplicationQuit()
     {
         m_InputDownEventDic.Clear();
         m_InputPressedEventDic.Clear();
         m_InputUpEventDic.Clear();
         m_MouseMoveEvent = null;
+        m_MouseWheelEvent = null;
     }
 }

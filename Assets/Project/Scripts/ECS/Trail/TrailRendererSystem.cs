@@ -51,7 +51,7 @@ public static class TrailMeshGenerator
     }
 }
 
-//[UpdateAfter(typeof(TrailCalculateSystem))]
+[UpdateAfter(typeof(BulletSystem))]
 public class TrailRendererSystem : ComponentSystem
 {
     public static Material m_Material;

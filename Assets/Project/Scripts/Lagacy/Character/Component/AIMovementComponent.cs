@@ -18,12 +18,32 @@ public class AIMovementComponent : CharacterBaseComponent
         base.UpdateComponent(_DeltaTime);
 
         if (!m_AICharacter) return;
-        if (m_AICharacter.m_Live == CharacterBase.E_Live.DEAD) return;
-
+        if (m_AICharacter.m_Live == CharacterBase.E_Live.DEAD)
+        {
+            if (m_AICharacter.GetNavMeshController().IsUpdate())
+                m_AICharacter.GetNavMeshController().ClearPath();
+            return;
+        }
         if (m_CharacterBase.m_UnderAnimState == CharacterBase.E_UnderBodyAnimState.JUMP)
         {
 
             return;
+        }
+        if (!m_AICharacter.GetNavMeshController().IsUpdate())
+        {
+            if (m_AICharacter.m_UnderAnimState == CharacterBase.E_UnderBodyAnimState.RUN)
+            {
+                m_AICharacter.m_Animator.SetFloat("DirectionX", 0.0f);
+                m_AICharacter.m_Animator.SetFloat("DirectionY", 0.0f);
+                m_AICharacter.m_UnderAnimState = CharacterBase.E_UnderBodyAnimState.LAND;
+            }
+            return;
+        }
+
+        if (m_AICharacter.m_UnderAnimState != CharacterBase.E_UnderBodyAnimState.RUN)
+        {
+            m_AICharacter.m_UnderAnimState = CharacterBase.E_UnderBodyAnimState.RUN;
+            m_AICharacter.m_Animator.CrossFade(CharacterBase.m_UpperBodyTreeKey, 0.1f);
         }
 
         Vector3 dir = m_AICharacter.GetNavMeshController().GetCurrentPathDirection(m_CharacterBase.transform).normalized;

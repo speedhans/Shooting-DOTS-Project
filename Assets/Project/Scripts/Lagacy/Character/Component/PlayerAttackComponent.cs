@@ -11,7 +11,7 @@ public class PlayerAttackComponent : CharacterBaseComponent
     {
         base.Initialize(_CharacterBase);
 
-        m_TargetLayerMask = 1 << LayerMask.NameToLayer("AICharacter") | 1 << LayerMask.NameToLayer("Ground") | 1 << LayerMask.NameToLayer("Obstacle");
+        m_TargetLayerMask = 1 << LayerMask.NameToLayer("AICharacter") | 1 << LayerMask.NameToLayer("Ground") | 1 << LayerMask.NameToLayer("Obstacle") | 1 << LayerMask.NameToLayer("SpellObstacle");
 
         //InputManager.Instance.AddInputDownEvent(KeyCode.Mouse0, AttackEnable);
         InputManager.Instance.AddInputPressedEvent(KeyCode.Mouse0, Attack);

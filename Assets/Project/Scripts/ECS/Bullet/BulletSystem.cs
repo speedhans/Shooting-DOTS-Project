@@ -33,12 +33,15 @@ public struct BulletComponent : IComponentData
     }
 }
 
+[UpdateAfter(typeof(TrailCalculateSystem))]
 public class BulletSystem : ComponentSystem
 {
     static public GameObject[] BulletHitPrefabs;
 
     static EntityManager m_EntityManger;
     static EntityArchetype m_BulletArchetype;
+
+    EndSimulationEntityCommandBufferSystem m_EndSimulationEcbSystem;
 
     static public void CreateBullet(float3 _StartPosition, float _LifeTime, int _HostID, E_BulletType _Type, int _Damage, float3 _Direction, float _Speed, LayerMask _TargetLayerMask, int _TrailMeshCount = 10)
     {
@@ -60,13 +63,15 @@ public class BulletSystem : ComponentSystem
     protected override void OnCreate()
     {
         m_EntityManger = World.DefaultGameObjectInjectionWorld.EntityManager;
-
         m_BulletArchetype = m_EntityManger.CreateArchetype(typeof(Translation), typeof(BulletComponent), typeof(TrailBufferElement), typeof(TrailComponent), typeof(LifeTimerComponent));
+        m_EndSimulationEcbSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
     }
 
     protected override void OnUpdate()
     {
         float deltatime = Time.DeltaTime * GameManager.Instance.TimeScale;
+
+        EntityCommandBuffer commandBuffer = m_EndSimulationEcbSystem.CreateCommandBuffer();
 
         Entities.ForEach((Entity _Entity, ref BulletComponent _Bullet, ref Translation _Translation) =>
         {
@@ -74,8 +79,30 @@ public class BulletSystem : ComponentSystem
             RaycastHit hit;
 
             float length = _Bullet.Speed * deltatime;
-            if (Physics.Raycast(ray, out hit, length, _Bullet.TargetLayerMask))
+            if (Physics.Raycast(ray, out hit, length, _Bullet.TargetLayerMask, QueryTriggerInteraction.Collide))
             {
+                CharacterBase character = hit.transform.GetComponent<CharacterBase>();
+                if (character)
+                {
+                    //Debug.Log("character hit!!");
+                    _Translation.Value = hit.point;
+                    commandBuffer.DestroyEntity(_Entity);
+                    character.GiveToDamage(_Bullet.HostID, _Bullet.Damage);
+                }
+                else
+                {
+                    if (math.dot(-_Bullet.Direction, hit.normal) > 0.0f)
+                    {
+                        _Translation.Value = hit.point;
+                        commandBuffer.DestroyEntity(_Entity);
+                    }
+                    else
+                    {
+                        _Translation.Value += _Bullet.Direction * length;
+                        return;
+                    }
+                }
+
                 LifeTimerWithObjectPool hiteffect = ObjectPool.GetObject<LifeTimerWithObjectPool>(BulletHitPrefabs[(int)_Bullet.BulletType].name);
                 if (hiteffect)
                 {
@@ -83,24 +110,10 @@ public class BulletSystem : ComponentSystem
                     hiteffect.transform.position = hit.point;
                     hiteffect.gameObject.SetActive(true);
                 }
+            }
 
-                CharacterBase character = hit.transform.GetComponent<CharacterBase>();
-                if (character)
-                {
-                    Debug.Log("character hit!!");
-                    m_EntityManger.DestroyEntity(_Entity);
-                    character.GiveToDamage(_Bullet.HostID, _Bullet.Damage);
-                }
-                else
-                {
-                    Debug.Log("obstacle hit!!");
-                    m_EntityManger.DestroyEntity(_Entity);
-                }
-            }
-            else
-            {
-                _Translation.Value += _Bullet.Direction * length;
-            }
+            _Translation.Value += _Bullet.Direction * length;
         });
+
     }
 }

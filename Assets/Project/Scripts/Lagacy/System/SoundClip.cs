@@ -18,8 +18,9 @@ public class SoundClip : MonoBehaviour
         if (!m_AutoPlay) return;
         if (m_Clip == null || m_Clip.Length < 0) return;
         if (m_3D)
-            SoundManager.Instance.PlayDefaultSound(m_Clip[Random.Range(0, m_Clip.Length - 1)], m_Loop);
-        else
             SoundManager.Instance.PlayInstanceSound(transform.position, m_Clip[Random.Range(0, m_Clip.Length - 1)]);
+        else
+            SoundManager.Instance.PlayDefaultSound(m_Clip[Random.Range(0, m_Clip.Length - 1)], m_Loop);
+
     }
 }

@@ -47,7 +47,7 @@ public class ECS_SpriteRenderer : MonoBehaviour
             manager.SetComponentData(entiti, new NonUniformScale { Value = new float3(1, 1, 1) });
             manager.SetComponentData(entiti, new TestComponent { Value = 1 });
             manager.SetComponentData(entiti, new MovementData { PerSpeed = 10.0f });
-            manager.SetName(entiti, "sprite test");
+            //manager.SetName(entiti, "sprite test");
         }
     }
 

@@ -12,19 +12,23 @@ public class CharacterBase : MonoBehaviour
 {
     public const string m_AnimGunAttackKey = "GunAttackStart";
     public const string m_AnimIdleKey = "Idle";
+    public const string m_UpperBodyTreeKey = "UnderBodyTree";
     bool DestoryThisGameObject = false;
     public enum E_UpperBodyAnimState
     {
         IDLE,
         ATTACK,
         CAST,
+        DEATH
     }
 
     public enum E_UnderBodyAnimState
     {
         LAND,
         JUMP,
+        RUN,
         CAST,
+        DEATH
     }
 
     public enum E_Live
@@ -79,6 +83,7 @@ public class CharacterBase : MonoBehaviour
 
     protected List<CharacterBaseComponent> m_ComponentList = new List<CharacterBaseComponent>();
 
+    protected bool IsAI = false;
     public int m_CharacterID;
     public int m_Health;
     public int m_HealthMax;
@@ -221,13 +226,20 @@ public class CharacterBase : MonoBehaviour
             m_ComponentList[i].LateUpdateComponent(deltatime);
         }
 
-        if (m_Live == E_Live.DEAD || !m_ChestBone) return;
+        if (m_Live == E_Live.DEAD || m_UpperAnimState == E_UpperBodyAnimState.CAST || !m_ChestBone) return;
 
         if (m_UpperAnimState == E_UpperBodyAnimState.ATTACK)
+        {
+            float XAngle = m_UpperBidyAddAngle.x + (m_UpperBodyAngleOffset.x * m_UpperBodyYAngleOffsetPercentage);
+            if (m_UnderAnimState == E_UnderBodyAnimState.RUN)
+            {
+                XAngle -= 10.0f;
+            }
             m_ChestBone.rotation = m_ChestBone.rotation * Quaternion.Euler(new Vector3(
-                m_UpperBidyAddAngle.x + (m_UpperBodyAngleOffset.x * m_UpperBodyYAngleOffsetPercentage),
+                XAngle,
                 m_UpperBidyAddAngle.y + m_UpperBodyAngleOffset.y,
                 m_UpperBidyAddAngle.z + m_UpperBodyAngleOffset.z));
+        }
     }
 
     public Vector3 GetBodyPositionWithWorld() { return transform.position + m_BodyPosition; }
@@ -261,9 +273,12 @@ public class CharacterBase : MonoBehaviour
     {
         foreach(SkinnedMeshRenderer s in m_Renderers)
         {
-            Color color = s.material.color;
-            color.a = _Alpha;
-            s.material.color = color;
+            foreach (Material m in s.materials)
+            {
+                Color color = m.color;
+                color.a = _Alpha;
+                m.color = color;
+            }
         }
     }
 
@@ -276,22 +291,43 @@ public class CharacterBase : MonoBehaviour
         {
             m_Live = E_Live.DEAD;
             m_UpperBidyAddAngle = Vector3.zero;
+            m_UpperAnimState = E_UpperBodyAnimState.DEATH;
+            m_UnderAnimState = E_UnderBodyAnimState.DEATH;
+            m_Animator.CrossFade("UpperBody.Death", 0.1f);
+            m_Animator.CrossFade("UnderBody.Death", 0.1f);
+            if (IsAI)
+                m_CapsuleCollider.isTrigger = true;
+            foreach (Gun g in GetGuns())
+                g.GunShotDisable();
         }
     }
 
-    public void SetCastMode(bool _UpperCast = true, bool _UnderCast = true)
+    public void Revive()
+    {
+        m_Health = m_HealthMax;
+        m_Live = E_Live.LIVE;
+        m_UpperBidyAddAngle = Vector3.zero;
+        m_UpperAnimState = E_UpperBodyAnimState.IDLE;
+        m_UnderAnimState = E_UnderBodyAnimState.LAND;
+        m_Animator.CrossFade(m_UpperBodyTreeKey, 0.1f);
+        m_Animator.CrossFade(m_AnimIdleKey, 0.1f);
+        if (IsAI)
+            m_CapsuleCollider.isTrigger = false;
+    }
+
+    public void SetCastMode(int _AnimNumber, bool _UpperCast = true, bool _UnderCast = true)
     {
         if (_UpperCast)
         {
             m_UpperAnimState = E_UpperBodyAnimState.CAST;
-            m_Animator.CrossFade("UpperBody.Cast1", 0.1f);
+            m_Animator.CrossFade("UpperBody.Cast" + _AnimNumber.ToString(), 0.1f);
             foreach (Gun g in GetGuns())
                 g.GunShotDisable();
         }
         if (_UnderCast)
         {
             m_UnderAnimState = E_UnderBodyAnimState.CAST;
-            m_Animator.CrossFade("UnderBody.Cast1", 0.1f);
+            m_Animator.CrossFade("UnderBody.Cast" + _AnimNumber.ToString(), 0.1f);
         }
     }
 

@@ -13,6 +13,7 @@ public class PlayerCharacter : CharacterBase
         GameManager.Instance.m_PlayerCharacter = this;
 
         UseTimeScale = false;
+        SetComponent<HealthRegenerationComponent>(this);
         SetComponent<PlayerMovementComponent>(this);
         SetComponent<PlayerAttackComponent>(this);
         SetComponent<PlayerRotateComponent>(this);
@@ -20,8 +21,5 @@ public class PlayerCharacter : CharacterBase
         m_FollowCamera = GameManager.Instance.m_Main.CreateFollowCamera();
         m_FollowCamera.SetTarget(this);
         m_FollowCamera.FollowRun();
-
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = false;
     }
 }

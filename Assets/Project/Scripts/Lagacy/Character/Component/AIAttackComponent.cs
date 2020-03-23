@@ -15,7 +15,7 @@ public class AIAttackComponent : CharacterBaseComponent
 
         m_AttackDelay = m_AICharacter.GetAIData().AttackDelay;
         m_ObstacleLayerMask = 1 << LayerMask.NameToLayer("Ground") | 1 << LayerMask.NameToLayer("Obstacle");
-        m_TargetLayerMask = 1 << LayerMask.NameToLayer("PlayerCharacter") | 1 << LayerMask.NameToLayer("Ground") | 1 << LayerMask.NameToLayer("Obstacle");
+        m_TargetLayerMask = 1 << LayerMask.NameToLayer("PlayerCharacter") | 1 << LayerMask.NameToLayer("Ground") | 1 << LayerMask.NameToLayer("Obstacle") | 1 << LayerMask.NameToLayer("SpellObstacle");
     }
 
     public override void UpdateComponent(float _DeltaTime)
@@ -23,7 +23,15 @@ public class AIAttackComponent : CharacterBaseComponent
         base.UpdateComponent(_DeltaTime);
 
         if (!m_AICharacter) return;
-        if (m_AICharacter.m_Live == CharacterBase.E_Live.DEAD) return;
+        if (m_AICharacter.m_Live == CharacterBase.E_Live.DEAD)
+        {
+            if (m_AICharacter.m_UpperAnimState == CharacterBase.E_UpperBodyAnimState.ATTACK)
+            {
+                m_AICharacter.m_UpperAnimState = CharacterBase.E_UpperBodyAnimState.DEATH;
+                m_AICharacter.m_Animator.CrossFade(CharacterBase.m_AnimIdleKey, 0.1f);
+            }
+            return;
+        }
         if (!m_AICharacter.m_TargetCharacter) return;
 
         if (m_AICharacter.GetAIState() != AICharacter.E_AIState.ATTACK) return;

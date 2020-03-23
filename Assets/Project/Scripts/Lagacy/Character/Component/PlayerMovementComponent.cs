@@ -45,7 +45,7 @@ public class PlayerMovementComponent : CharacterBaseComponent
         if (m_AnimationImmediatelyAfterTheJumpTimer > 0.0f)
             m_AnimationImmediatelyAfterTheJumpTimer -= _DeltaTime;
 
-        if (m_CharacterBase.m_UnderAnimState == CharacterBase.E_UnderBodyAnimState.JUMP)
+        if (m_JumpingCount > 0)
         {
             m_JumpTriggerTimer -= _DeltaTime;
             if (m_JumpTriggerTimer <= 0.0f)
@@ -60,7 +60,7 @@ public class PlayerMovementComponent : CharacterBaseComponent
                 }
             }
         }
-        else
+        else if (m_CharacterBase.m_UnderAnimState != CharacterBase.E_UnderBodyAnimState.CAST)
             SetMovementAnim(InputManager.Instance.GetArrowVector());
     }
 
@@ -72,6 +72,11 @@ public class PlayerMovementComponent : CharacterBaseComponent
 
     void SetMovementAnim(Vector2 _Dir)
     {
+        if (InputManager.Instance.GetArrowVectorInstance() == Vector2.zero)
+        {
+            m_CharacterBase.m_UnderAnimState = CharacterBase.E_UnderBodyAnimState.LAND;
+        }
+
         m_CharacterBase.m_Animator.SetFloat("DirectionX", _Dir.x);
         m_CharacterBase.m_Animator.SetFloat("DirectionY", _Dir.y);
 
@@ -83,7 +88,7 @@ public class PlayerMovementComponent : CharacterBaseComponent
                 AnimatorClipInfo[] infos = m_CharacterBase.m_Animator.GetCurrentAnimatorClipInfo(0);
                 if (infos != null && infos.Length > 0 && (infos[0].clip.name.Contains("Fall") || infos[0].clip.name.Contains("Jump")))
                 {
-                    m_CharacterBase.m_Animator.CrossFade("UnderBodyTree", 0.1f);
+                    m_CharacterBase.m_Animator.CrossFade(CharacterBase.m_UpperBodyTreeKey, 0.1f);
                 }
             }
         }
@@ -96,8 +101,14 @@ public class PlayerMovementComponent : CharacterBaseComponent
         if (m_CharacterBase.m_UnderAnimState == CharacterBase.E_UnderBodyAnimState.CAST) return;
         if (m_PostionUpdate) return;
         m_PostionUpdate = true;
+
+        if (m_CharacterBase.m_UnderAnimState != CharacterBase.E_UnderBodyAnimState.RUN)
+        {
+            m_CharacterBase.m_UnderAnimState = CharacterBase.E_UnderBodyAnimState.RUN;
+            m_CharacterBase.m_Animator.CrossFade(CharacterBase.m_UpperBodyTreeKey, 0.1f);
+        }
+
         m_CharacterBase.transform.position += (m_CharacterBase.transform.rotation * InputManager.Instance.GetArrowVector3().normalized) * Time.deltaTime * m_MovementSpeed;
-        //m_CharacterBase.m_Rigidbody.MovePosition(m_CharacterBase.transform.position + InputManager.Instance.GetArrowVector3() * Time.deltaTime * m_MovementSpeed);
     }
 
     void Jump()

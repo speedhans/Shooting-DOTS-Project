@@ -25,7 +25,7 @@ public class TestECS2 : MonoBehaviour, IConvertGameObjectToEntity
         for (int i = 0; i < m_ParticleCount; ++i)
         {
             Entity entity = manager.CreateEntity(arch);
-            manager.SetName(entity, "Trail_" + i.ToString());
+            //manager.SetName(entity, "Trail_" + i.ToString());
             manager.SetComponentData(entity, new Translation() { Value = new float3(1, 1, 1) });
             manager.SetComponentData(entity, new TrailVelocityComponent() { Value = random.NextFloat3Direction() });
             manager.SetComponentData(entity, new TrailComponent() { MeshCount = 20 });
