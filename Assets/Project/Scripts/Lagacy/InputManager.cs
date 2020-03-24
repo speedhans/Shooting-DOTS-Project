@@ -26,6 +26,7 @@ public class InputManager : MonoBehaviour
     Dictionary<KeyCode, System.Action> m_InputDownEventDic = new Dictionary<KeyCode, System.Action>();
     Dictionary<KeyCode, System.Action> m_InputUpEventDic = new Dictionary<KeyCode, System.Action>();
     Dictionary<KeyCode, System.Action> m_InputPressedEventDic = new Dictionary<KeyCode, System.Action>();
+    Dictionary<KeyCode, System.Action> m_InputPressedFixedEventDic = new Dictionary<KeyCode, System.Action>();
     System.Action<Vector2, Vector2, Vector2> m_MouseMoveEvent;
     System.Action<float> m_MouseWheelEvent;
 
@@ -103,6 +104,17 @@ public class InputManager : MonoBehaviour
         m_ArrowVector.y = Mathf.Clamp(m_ArrowVector.y, -1.0f, 1.0f);
     }
 
+    private void FixedUpdate()
+    {
+        foreach (KeyCode k in m_InputPressedFixedEventDic.Keys)
+        {
+            if (Input.GetKey(k))
+            {
+                m_InputPressedFixedEventDic[k]?.Invoke();
+            }
+        }
+    }
+
     private void LateUpdate()
     {
         if (!m_ArrowSmoothOriginRegressionRun)
@@ -169,16 +181,31 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    public void AddInputPressedEvent(KeyCode _KeyCode, System.Action _Function)
+    public void AddInputPressedEvent(KeyCode _KeyCode, System.Action _Function, bool _FixedUpdateOnly = false)
     {
         System.Action action;
-        if (m_InputPressedEventDic.TryGetValue(_KeyCode, out action))
+
+        if (_FixedUpdateOnly)
         {
-            action += _Function;
+            if (m_InputPressedFixedEventDic.TryGetValue(_KeyCode, out action))
+            {
+                action += _Function;
+            }
+            else
+            {
+                m_InputPressedFixedEventDic.Add(_KeyCode, new System.Action(_Function));
+            }
         }
         else
         {
-            m_InputPressedEventDic.Add(_KeyCode, new System.Action(_Function));
+            if (m_InputPressedEventDic.TryGetValue(_KeyCode, out action))
+            {
+                action += _Function;
+            }
+            else
+            {
+                m_InputPressedEventDic.Add(_KeyCode, new System.Action(_Function));
+            }
         }
     }
 

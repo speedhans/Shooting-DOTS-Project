@@ -26,6 +26,8 @@ public class EnemySpawner : MonoBehaviour
                 Destroy(g);
                 gameObject.SetActive(false);
             }
+
+            m_Target.transform.position = m_Target.GetNavMeshController().FindNavMeshSampleLocation(transform.position, 1.0f);
         }
         m_SpawnTimer = m_SpawnDelay;
     }
@@ -41,7 +43,7 @@ public class EnemySpawner : MonoBehaviour
 
         if (m_SpawnTimer <= 0.0f)
         {
-            m_Target.transform.position = transform.position;
+            m_Target.transform.position = m_Target.GetNavMeshController().FindNavMeshSampleLocation(transform.position, 1.0f);
             m_Target.Revive();
             m_SpawnTimer = m_SpawnDelay;
         }

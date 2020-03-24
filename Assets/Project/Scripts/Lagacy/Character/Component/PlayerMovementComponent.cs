@@ -22,10 +22,10 @@ public class PlayerMovementComponent : CharacterBaseComponent
         m_GroundLayer = 1 << LayerMask.NameToLayer("Ground") | 1 << LayerMask.NameToLayer("Obstacle");
 
         InputManager.Instance.AddInputDownEvent(KeyCode.Space, Jump);
-        InputManager.Instance.AddInputPressedEvent(KeyCode.W, PositionMove);
-        InputManager.Instance.AddInputPressedEvent(KeyCode.S, PositionMove);
-        InputManager.Instance.AddInputPressedEvent(KeyCode.A, PositionMove);
-        InputManager.Instance.AddInputPressedEvent(KeyCode.D, PositionMove);
+        InputManager.Instance.AddInputPressedEvent(KeyCode.W, PositionMove, true);
+        InputManager.Instance.AddInputPressedEvent(KeyCode.S, PositionMove, true);
+        InputManager.Instance.AddInputPressedEvent(KeyCode.A, PositionMove, true);
+        InputManager.Instance.AddInputPressedEvent(KeyCode.D, PositionMove, true);
     }
 
     public override void UpdateComponent(float _DeltaTime)
@@ -122,7 +122,7 @@ public class PlayerMovementComponent : CharacterBaseComponent
         Vector3 dir = InputManager.Instance.GetArrowVector3Instance();
         if (Mathf.Abs(dir.x) > 0.1f || Mathf.Abs(dir.z) > 0.1f)
         {
-            Vector3 speed = m_CharacterBase.transform.rotation * InputManager.Instance.GetArrowVector().normalized;
+            Vector3 speed = m_CharacterBase.transform.rotation * InputManager.Instance.GetArrowVector3().normalized;
             Vector3 horizontal = (Vector3.up + new Vector3(speed.x, 0.0f, 0.0f)).normalized;
             Vector3 vertical = (Vector3.up + new Vector3(speed.z, 0.0f, 0.0f)).normalized;
             float horizontalangle = Vector3.Angle(Vector3.up, horizontal);
